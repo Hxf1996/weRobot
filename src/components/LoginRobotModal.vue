@@ -27,20 +27,23 @@ export default {
             refreshInterval: '',
             time: '',
             show: false,
+            timestamp: '',
         };
     },
     methods: {
         async open() {
             try {
-                clearTimeout(this.time);
+                this.timestamp = new Date().getTime();
                 const { uuid, qrcode } = await RobotAPI.getLoginQrcode({
                     userId: this.userToken,
                 });
                 this.setUUId(uuid);
                 this.qrCodeUrl = qrcode;
-                this.refreshInterval = setInterval(async () => {
-                    await this.open();
-                }, 60000);
+                if (this.refreshInterval === '' || ((this.timestamp - new Date().getTime()) >= 60000)) {
+                    this.refreshInterval = setInterval(async () => {
+                        await this.open();
+                    }, 60000);
+                }
                 await this.isScan();
             } catch (err) {
                 console.log(err);
@@ -48,6 +51,7 @@ export default {
         },
         // 判断是否扫码
         async isScan() {
+            const startTime = this.timestamp;
             try {
                 await RobotAPI.isScan({
                     userId: this.userToken,
@@ -56,12 +60,15 @@ export default {
                 await this.isLogin();
             } catch (err) {
                 console.log(err);
-                this.time = setTimeout(async () => {
-                    await this.isScan();
-                }, 1000);
+                if (this.show && (startTime === this.timestamp)) {
+                    this.time = setTimeout(async () => {
+                        await this.isScan();
+                    }, 1000);
+                }
             }
         },
         async isLogin() {
+            const startTime = this.timestamp;
             try {
                 const { userId, uin, id } = await RobotAPI.isLogin({
                     userId: this.userToken,
@@ -71,21 +78,25 @@ export default {
                 await this.initRobot({ userId, uin, robotId: id });
             } catch (err) {
                 console.log(err);
-                this.time = setTimeout(async () => {
-                    await this.isLogin();
-                }, 1000);
+                if (this.show && (startTime === this.timestamp)) {
+                    this.time = setTimeout(async () => {
+                        await this.isLogin();
+                    }, 1000);
+                }
             }
         },
         async initRobot(initData) {
             try {
+                this.close();
                 await RobotAPI.init(initData);
                 this.$emit('activate');
-                this.close();
             } catch (err) {
                 console.log(err);
             }
         },
         close() {
+            clearTimeout(this.time);
+            clearInterval(this.refreshInterval);
             this.closeBackDrop();
             this.show = false;
             this.$emit('close');
