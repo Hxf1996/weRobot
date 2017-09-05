@@ -1,0 +1,21 @@
+/*
+* @Author: 94078
+* @Date:   2017-06-23 16:32:38
+* @Last Modified by:   hxf
+* @Last Modified time: 2017-08-31 14:04:24
+*/
+@custom-media --extra-small-viewport (max-width: 576px);
+@custom-media --small-viewport (min-width: 576px);
+@custom-media --medium-viewport (min-width: 768);
+@custom-media --large-viewport (min-width: 992px);
+@custom-media --extra-large-viewport (min-width: 1200);
+
+
+html, body{
+    transform: translate3d(0, 0, 0);
+    height: 100%;
+}
+
+a {
+    cursor: pointer;
+}
