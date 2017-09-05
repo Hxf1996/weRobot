@@ -90,9 +90,10 @@ export default {
     background-color: rgb(251, 251, 251);
     border: 1.8px solid rgb(224, 224, 224);
     padding: .5rem;
-    display: inline-block;
     margin-right: 1.2rem;
     margin-bottom: 1.2rem;
+    float: left;
+    list-style: none;
 
     & > span {
         margin-right: 2rem;
