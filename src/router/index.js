@@ -1,8 +1,8 @@
 /*
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-02 11:35:13
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-06 11:26:47
 */
 
 import Vue from 'vue';
@@ -15,6 +15,11 @@ export default new Router({
     routes: [
         {
             path: '/',
+            name: 'index',
+            component: () => import('@/page/index'),
+        },
+        {
+            path: '/robotManage',
             name: 'robotManage',
             component: () => import('@/page/RobotManage'),
         },
@@ -34,9 +39,6 @@ export default new Router({
             path: '/massTexting',
             name: 'massTexting',
             component: () => import('@/page/MassTexting'),
-            redirect: {
-                name: 'addMass',
-            },
             children: [
                 {
                     path: 'addMass',
@@ -54,6 +56,11 @@ export default new Router({
                     component: () => import('@/page/MassTexting/massRecord'),
                 },
             ],
+        },
+        {
+            path: '/operate/:id',
+            name: 'operate',
+            component: () => import('@/page/Operate'),
         },
     ],
 });

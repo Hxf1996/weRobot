@@ -4,14 +4,30 @@
         <nav>
             <router-link v-for="(one, index) in navData" :key="index" :to="one.to" class="nav-link" :class="{active: one.to.name === $route.name}">{{ one.title }}</router-link>
         </nav>
-        <router-view class="container-fluid mass-content"></router-view>
+        <transition name="transparent" mode="out-in">
+            <router-view class="container-fluid mass-content"></router-view>
+        </transition>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
     name: 'MassTexting',
     created() {
+        setTimeout(() => {
+            if (this.robotList.length === 0) {
+                alert('请先添加机器人');
+                this.$router.push({
+                    name: 'robotManage',
+                });
+            } else {
+                this.$router.push({
+                    name: 'addMass',
+                });
+            }
+        });
     },
     data() {
         return {
@@ -42,6 +58,9 @@ export default {
     components: {
     },
     computed: {
+        ...mapState('Robot', {
+            robotList: 'list',
+        }),
     },
 };
 </script>
@@ -80,5 +99,6 @@ nav {
     padding-top: 2rem;
     flex-grow: 1;
     overflow-y: scroll;
+    position: relative;
 }
 </style>

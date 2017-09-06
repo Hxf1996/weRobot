@@ -1,6 +1,6 @@
 <template>
     <form id="add-mass" @submit.prevent="addMass">
-        <div class="form-group row">
+        <div class="form-group row" v-if="false">
             <label for="texting" class="col-sm-2 col-form-label">选择机器人</label>
             <div class="col-sm-8">
                 <div class="form-check form-check-inline"
@@ -22,10 +22,13 @@
         <div class="form-group row">
             <label for="picture" class="col-sm-2 col-form-label">群发图片&emsp;</label>
             <div class="col-sm-8">
-                <label class="custom-file">
-                    <input type="file" class="custom-file-input" @change="uploadImg">
-                    <span class="custom-file-control">{{ addMassData.srcUrl ? addMassData.srcUrl : '选择图片' }}</span>
+                <label class="upload">
+                    <input type="file" class="upload-input" @change="uploadImg">
+                    <span class="upload-control" v-if="!isUpload && !addMassData.srcUrl">+</span>
+                    <span class="loading" v-if="isUpload"></span>
+                    <img class="upload-img" v-if="addMassData.srcUrl" :src="addMassData.srcUrl" alt="群发图片">
                 </label>
+                <span class="reUpload" v-if="addMassData.srcUrl">点击重传图片</span>
             </div>
         </div>
         <div class="form-group row">
@@ -57,13 +60,17 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row">
-            <label for="texting" class="col-sm-2 col-form-label">定时设置&emsp;</label>
-            <div class="col-sm-8">
-                <input type="date" name="date" v-model="date" :disabled="!addMassData.isFixedTimeSend" />
-                <input type="time" name="time" v-model="time" :disabled="!addMassData.isFixedTimeSend" />
+        <transition name="slide">
+            <div class="form-group row" v-show="addMassData.isFixedTimeSend">
+                <label for="texting" class="col-sm-2 col-form-label">定时设置&emsp;</label>
+                <div class="col-sm-8">
+                    <datepicker class="date"
+                        v-model="date" language="ch" min="2015-01-01"></datepicker>
+                    <timepicker class="time"
+                        format="HH:mm:ss" v-model="time"></timepicker>
+                </div>
             </div>
-        </div>
+        </transition>
         <footer>
             <button type="submit" class="save">保存</button>
         </footer>
@@ -71,7 +78,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
+
+import Util from '@/libs/util';
+
+import Datepicker from '@/components/common/Datepicker';
+import Timepicker from '@/components/common/Timepicker';
 
 import UploadAPI from '@/api/Upload';
 import GroupAPI from '@/api/Group';
@@ -79,6 +91,7 @@ import GroupAPI from '@/api/Group';
 export default {
     name: 'AddMNass',
     created() {
+        this.date = Util.formatDate(new Date().getTime(), 'YYYY-MM-dd');
     },
     data() {
         return {
@@ -91,39 +104,71 @@ export default {
                 fixedTime: '',
             },
             date: '',
-            time: '',
+            time: {
+                HH: '00',
+                mm: '00',
+                ss: '00',
+            },
             selectAll: false,
+            isUpload: false,
         };
     },
     methods: {
         async uploadImg(e) {
+            this.isUpload = true;
             const file = e.target.files[0];
             const param = new FormData();
             param.append('fileUpload', file, file.name);
             UploadAPI.uploadImg(param).then((response) => {
+                this.isUpload = false;
                 this.addMassData.srcUrl = `http://cdn.elephtribe.com/${response.data.entry[0]}`;
             }).catch((err) => {
                 console.log(err);
             });
         },
         async addMass() {
+            this.loading({
+                text: '正在新增',
+            });
             try {
-                const message = await GroupAPI.addMass(this.addMassData);
-                alert('新增成功');
-                console.log(message);
+                const message = await GroupAPI.addMass({
+                    ...this.addMassData,
+                    uin: this.robotList[0].uin,
+                });
+                this.loading({
+                    text: message,
+                });
+                this.loaded(1500);
+                this.addMassData = {
+                    uin: '',
+                    text: '',
+                    srcUrl: '',
+                    toGroupId: [],
+                    isFixedTimeSend: false,
+                    fixedTime: '',
+                };
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
+        ...mapMutations([
+            'loading',
+            'loaded',
+        ]),
     },
     components: {
+        Datepicker,
+        Timepicker,
     },
     watch: {
         date() {
-            this.addMassData.fixedTime = `${this.date} ${this.time}:00`;
+            this.addMassData.fixedTime = `${this.date} ${this.time.HH}:${this.time.mm}:${this.time.ss}`;
         },
         time() {
-            this.addMassData.fixedTime = `${this.date} ${this.time}:00`;
+            this.addMassData.fixedTime = `${this.date} ${this.time.HH}:${this.time.mm}:${this.time.ss}`;
         },
         selectAll() {
             if (this.selectAll) {
@@ -139,15 +184,15 @@ export default {
             groupList: 'groupList',
         }),
         seleteId() {
-            let id = -1;
-            this.robotList.forEach((item) => {
-                if (item.uin !== this.addMassData.uin) {
-                    return false;
-                }
-                id = item.id;
-                return true;
-            });
-            return id;
+            // let id = -1;
+            // this.robotList.forEach((item) => {
+            //     if (item.uin !== this.addMassData.uin) {
+            //         return false;
+            //     }
+            //     id = item.id;
+            //     return true;
+            // });
+            return this.robotList[0].id;
         },
     },
 };
@@ -155,6 +200,8 @@ export default {
 
 <style scoped>
 #add-mass {
+    color: #585b60;
+
     & .col-form-label {
         text-align: center;
     }
@@ -180,6 +227,11 @@ export default {
 }
 
 .group {
+
+    & input {
+        margin-right: 7px;
+    }
+
     & .form-check-label:first-child {
         border-bottom: 1px solid rgb(234, 234, 234);
         padding-bottom: .5rem;
@@ -189,5 +241,70 @@ export default {
     & .form-check-label {
         display: block;
     }
+}
+
+.date {
+    width: 150px;
+    display: inline-block;
+    height: 35px;
+    float: left;
+    margin-right: 1rem;
+}
+
+.time {
+    float: left;
+}
+
+.upload {
+    width: 140px;
+    height: 140px;
+    background-color: #b3b3b3;
+    display: block;
+    position: relative;
+    overflow: scroll;
+
+    & .upload-input {
+        width: 140px;
+        height: 140px;
+        opacity: 0;
+    }
+
+    & .upload-control {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 4rem;
+        height: 4rem;
+        font-size: 2.4rem;
+        margin-top: -2rem;
+        margin-left: -2rem;
+        text-align: center;
+    }
+
+    & .upload-img {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        top: 0;
+    }
+
+    & .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -18px;
+        margin-left: -30px;
+    }
+}
+
+.reUpload {
+    width: 140px;
+    position: absolute;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: .8rem;
+    bottom: 0;
+    text-align: center;
+    background-color: #d8d8d8;
 }
 </style>

@@ -10,13 +10,13 @@
                     <button type="button" class="btn btn-secondary" @click="toogleRobotStatu(one)">{{ one.status ? '手动掉线' : '重新连接' }}</button>
                 </div>
             </div>
-            <div class="card login-robot" @click="openLoginRobotModal">
+            <div class="card login-robot" @click="openLoginRobotModal" v-if="robotList.length === 0">
                 <div class="card-body">
                     <span class="card-title">+&ensp;创建机器人</span>
                 </div>
             </div>
         </div>
-        <ol>使用帮助：
+        <ol class="help">使用帮助：
             <li>如果尝试多次登录失败，请登录web微信（http://wx.qq.com），检查是否可以正常登录</li>
             <li>为保证服务稳定，建议您优使用微信小号扫描完成机器人创建</li>
             <li>若无微信小号，可使用常用微信账号扫码完成机器人创建</li>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import LoginRobotModal from '@/components/LoginRobotModal';
 import LogoutRobotModal from '@/components/LogoutRobotModal';
@@ -74,12 +74,16 @@ export default {
                 break;
             }
         },
-        ...mapMutations('Robot', [
-            'setRobotList',
-        ]),
         ...mapActions('Robot', [
             'getRobotList',
         ]),
+    },
+    watch: {
+        robotList() {
+            if (this.robotList.length === 0) {
+                this.openLoginRobotModal();
+            }
+        },
     },
     components: {
         LoginRobotModal,
@@ -113,9 +117,10 @@ h4 {
     flex-grow: 1;
     overflow-y: scroll;
     padding-top: 2rem;
+    color: #585b60;
 
     & .card {
-        height: 200px;
+        height: 175px;
         width: 30%;
         margin: 0 auto;
         float: left;
@@ -153,6 +158,12 @@ h4 {
         left: 50%;
         margin-left: -5rem;
         margin-top: -1.6rem;
+        color: #585b60;
     }
+}
+
+.help {
+    color: #585b60;
+    font-size: .8rem;
 }
 </style>

@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 import Util from '@/libs/util';
 
@@ -47,6 +47,9 @@ export default {
     },
     methods: {
         async init() {
+            this.loading({
+                text: '正在加载',
+            });
             try {
                 const { records, sendStatusMap } = await GroupAPI.getMsgRecord({
                     userId: this.userToken,
@@ -61,12 +64,19 @@ export default {
                     });
                     records[index].sendStatusStr = sendStatusMap[mass.sendStatus];
                 });
-                console.log(records);
+                this.loaded(100);
                 this.massList.push(...records);
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
+        ...mapMutations([
+            'loading',
+            'loaded',
+        ]),
     },
     watch: {
         $route() {

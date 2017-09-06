@@ -1,10 +1,16 @@
 <template>
     <modal :active="active" @toogle="close">
+        <div class="modal-header">
+            <h6></h6>
+            <button type="button" class="close" aria-label="Close" @click="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         <div class="body">
-            你确定要掉线<br/>机器人"{{ name }}"吗？
+            <span>你确定要掉线<br/>机器人"{{ name }}"吗？</span>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @click="submit">确定掉线</button>
-                <button type="button" class="btn" @click="close">取消</button>
+                <button type="button" class="btn btn-submit" @click="submit">确定掉线</button>
+                <button type="button" class="btn btn-cancel" @click="close">取消</button>
             </div>
         </div>
     </modal>
@@ -27,13 +33,22 @@ export default {
     },
     methods: {
         async submit() {
+            this.loading({
+                text: '正在断线',
+            });
             try {
                 const message = await RobotAPI.logout({ uin: this.uin });
-                console.log(message);
+                this.loading({
+                    text: message,
+                });
+                this.loaded(1500);
                 this.$emit('activate');
                 this.close();
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
         close() {
@@ -44,6 +59,8 @@ export default {
         ...mapMutations([
             'closeBackDrop',
             'openBackDrop',
+            'loading',
+            'loaded',
         ]),
     },
     watch: {
@@ -61,4 +78,13 @@ export default {
 </script>
 
 <style scoped>
+.body {
+    & span {
+        color: rgb(88, 91, 96);
+        text-align: center;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        display: block;
+    }
+}
 </style>

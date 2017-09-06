@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 import GroupAPI from '@/api/Group';
 
@@ -48,33 +48,52 @@ export default {
         this.init();
     },
     methods: {
-        init() {
-            this.robotList.forEach(async (item) => {
-                try {
-                    const entry = await GroupAPI.getUndoTask({ robotId: item.id });
-                    entry.forEach((mass, index) => {
+        async init() {
+            this.loading({
+                text: '正在加载',
+            });
+            try {
+                const entry = await GroupAPI.getUndoTask({ userId: this.userId });
+                entry.forEach((mass, index) => {
+                    this.robotList.forEach((item) => {
                         if (item.id === mass.robotId) {
                             entry[index].robotName = item.nickname;
                         }
                     });
-                    this.massList.push(...entry);
-                } catch (err) {
-                    console.log(err);
-                }
-            });
+                });
+                this.loaded(100);
+                this.massList.push(...entry);
+            } catch (err) {
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
+            }
         },
         async deleteMass(id) {
+            this.loading({
+                text: '正在删除',
+            });
             try {
                 const message = await GroupAPI.delTaskInfo({
                     taskId: id,
                 });
-                console.log(message);
+                this.loading({
+                    text: message,
+                });
                 this.massList = [];
                 this.init();
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
+        ...mapMutations([
+            'loading',
+            'loaded',
+        ]),
     },
     watch: {
         $route() {
@@ -89,6 +108,9 @@ export default {
     computed: {
         ...mapState('Robot', {
             robotList: 'list',
+        }),
+        ...mapState('User', {
+            userId: 'userToken',
         }),
     },
 };

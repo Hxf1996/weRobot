@@ -1,18 +1,21 @@
 <template>
     <div id="group-list">
-        <ul>
-            <li class="group" @click="openAddGroupModal">
-                <span>添加群</span>
+        <transition-group tag="ul">
+            <li class="group" @click="openAddGroupModal" key="0">
+                <span>+ 添加群</span>
             </li>
             <li v-for="one in groupList[$route.params.id]" :key="one.id" class="group">
                 <span>{{ one.nickname }}</span>
-                <button type="button" class="close" aria-label="Close" @click="openDeleteGroup(one.id, one.nickname)">
+                <button type="button" class="close" aria-label="Close"
+                    @click="openDeleteGroup(one.id, one.nickname)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </li>
-        </ul>
-        <delete-group-modal :active="deteleGroupModal" :name="deleteData.name" @submit="deleteGroup(deleteData.id)"></delete-group-modal>
-        <add-group-modal :active="addGroupModal" @close="closeAddGroupModal" @submit="getGroupList"></add-group-modal>
+        </transition-group>
+        <delete-group-modal :active="deteleGroupModal" :name="deleteData.name"
+            @submit="deleteGroup(deleteData.id)" @close="closeDeleteGroup"></delete-group-modal>
+        <add-group-modal :active="addGroupModal"
+            @close="closeAddGroupModal" @submit="getGroupList"></add-group-modal>
     </div>
 </template>
 
@@ -39,7 +42,13 @@ export default {
             this.deleteData = { id, name };
             this.deteleGroupModal = true;
         },
+        closeDeleteGroup() {
+            this.deteleGroupModal = false;
+        },
         async deleteGroup(id) {
+            this.loading({
+                text: '正在删除',
+            });
             try {
                 const message = await GroupAPI.updateGroup([
                     {
@@ -48,11 +57,17 @@ export default {
                         isAtReply: false,
                     },
                 ]);
-                console.log(message);
-                this.deteleGroupModal = false;
+                this.loading({
+                    text: message,
+                });
+                this.loaded(1500);
+                this.closeDeleteGroup();
                 this.getGroupList();
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
         openAddGroupModal() {
@@ -63,6 +78,8 @@ export default {
         },
         ...mapMutations([
             'closeBackDrop',
+            'loading',
+            'loaded',
         ]),
         ...mapActions('Robot', [
             'getGroupList',
@@ -97,6 +114,7 @@ export default {
 
     & > span {
         margin-right: 2rem;
+        color: #585b60;
     }
 }
 </style>

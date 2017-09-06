@@ -2,6 +2,10 @@
     <modal :active="show" @toogle="close">
         <div class="modal-header">
             <h5>{{ name ? '机器人连接' : '机器人创建' }}</h5>
+            <button type="button" class="close" aria-label="Close"
+                @click="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         <div class="body">
             <div class="qrcode">
@@ -70,12 +74,12 @@ export default {
         async isLogin() {
             const startTime = this.timestamp;
             try {
-                const { userId, uin, id } = await RobotAPI.isLogin({
+                const { uin, id } = await RobotAPI.isLogin({
                     userId: this.userToken,
                     uuid: this.uuid,
                 });
                 clearInterval(this.refreshInterval);
-                await this.initRobot({ userId, uin, robotId: id });
+                await this.initRobot({ uin, robotId: id });
             } catch (err) {
                 console.log(err);
                 if (this.show && (startTime === this.timestamp)) {
@@ -142,9 +146,14 @@ export default {
     }
 }
 
-.body > span {
-    width: 100%;
-    text-align: center;
-    display: block;
+.body {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+
+    & > span {
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
 }
 </style>
