@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-04-15 11:22:00
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-06 18:07:24
+* @Last Modified time: 2017-09-07 17:26:01
 */
 
 export const openBackDrop = (state) => {
@@ -29,11 +29,9 @@ export const loading = (state, payload) => {
     };
 };
 
-export const loaded = (state, payload) => {
-    setTimeout(() => {
-        state.loading = {
-            ...state.loading,
-            active: false,
-        };
-    }, payload);
+export const loaded = (state) => {
+    state.loading = {
+        ...state.loading,
+        active: false,
+    };
 };

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 
 import GroupAPI from '@/api/Group';
 
@@ -92,6 +92,8 @@ export default {
         },
         ...mapMutations([
             'loading',
+        ]),
+        ...mapActions([
             'loaded',
         ]),
     },

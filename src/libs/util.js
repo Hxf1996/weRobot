@@ -1,12 +1,12 @@
 /*
 * @Author: 94078
 * @Date:   2017-07-21 16:44:53
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-05 14:02:59
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-07 14:36:48
 */
 
 const getStorage = (key) => {
-    const value = JSON.parse(sessionStorage.getItem(key)) || {};
+    const value = JSON.parse(sessionStorage.getItem(key)) || '';
     return value;
 };
 

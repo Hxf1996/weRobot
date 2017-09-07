@@ -14,7 +14,7 @@
                             @click="go({ name: 'massTexting' })">消息群发&emsp;</li>
                     </ul>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="flex-direction: column;">
                     <h5>群操作</h5>
                     <ul class="list-group">
                         <li class="list-group-item bottom-nav" v-for="robot in robotList" :key="robot.id">
@@ -22,7 +22,7 @@
                                 <li class="list-group-item"
                                     v-for="group in groupList[robot.id]" :key="group.id"
                                     :class="{ active: $route.params.id === group.id }"
-                                    @click="go({ name: 'operate', params: { id: group.id } })">{{ group.nickname }}</li>
+                                    @click="go({ name: 'operate', params: { id: group.id, nickName: group.nickname } })">{{ group.nickname }}</li>
                             </ul>
                         </li>
                     </ul>
@@ -54,7 +54,7 @@ export default {
     name: 'app',
     async created() {
         const userToken = Util.getStorage('USER_TOKEN');
-        if (Object.getOwnPropertyNames(userToken).length !== 0) {
+        if (userToken !== '') {
             this.setUserToken(userToken);
         }
     },
@@ -80,6 +80,10 @@ export default {
             await this.getRobotList();
         },
         $route() {
+            if (this.userToken === '' && this.$route.name !== 'index') {
+                alert('请先登录！');
+                this.$router.push({ name: 'index' });
+            }
             if (this.$route.name === 'robotManage') {
                 this.getRobotList();
             }
@@ -123,6 +127,7 @@ section {
         margin-right: 20px;
         background-color: #fff;
         border: 1.8px solid rgb(224, 224, 224);
+        flex-shrink: 0;
     }
 
     & > main {
@@ -139,8 +144,6 @@ section {
 }
 
 .left-nav {
-    overflow-y: scroll;
-
     & h5 {
         color: rgb(179, 179, 179);
         margin-top: 1.5rem;
@@ -149,7 +152,13 @@ section {
         font-weight: 400;
     }
 
+    & .list-group-item {
+        display: flex;
+    }
+
     & .top-nav {
+        flex-shrink: 0;
+        flex-direction: column;
 
         & li {
             border: 0;
@@ -173,15 +182,21 @@ section {
     }
 
     & .bottom-nav {
+        flex-grow: 1;
+        flex-direction: column;
 
         & h6 {
             color: rgb(179, 179, 179);
             margin-top: 1.5rem;
             margin-bottom: .8rem;
             margin-left: 1.8rem;
+            flex-shrink: 0;
         }
 
         & .list-group {
+            flex-grow: 1;
+            overflow-y: scroll;
+
             & li {
                 border: 0;
                 padding-top: .8rem;

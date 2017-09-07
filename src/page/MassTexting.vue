@@ -27,7 +27,7 @@ export default {
                     name: 'addMass',
                 });
             }
-        });
+        }, 1000);
     },
     data() {
         return {

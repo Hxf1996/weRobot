@@ -23,7 +23,7 @@ import Modal from '@/components/common/Modal';
 import RobotAPI from '@/api/Robot';
 
 export default {
-    name: 'UserModal',
+    name: 'LoginRobotModal',
     props: ['name', 'active'],
     data() {
         return {
@@ -46,7 +46,7 @@ export default {
                 if (this.refreshInterval === '' || ((this.timestamp - new Date().getTime()) >= 60000)) {
                     this.refreshInterval = setInterval(async () => {
                         await this.open();
-                    }, 60000);
+                    }, 120000);
                 }
                 await this.isScan();
             } catch (err) {
@@ -63,11 +63,14 @@ export default {
                 });
                 await this.isLogin();
             } catch (err) {
-                console.log(err);
+                let time = 1000;
+                if (err === 'timeout') {
+                    time = 60000;
+                }
                 if (this.show && (startTime === this.timestamp)) {
                     this.time = setTimeout(async () => {
                         await this.isScan();
-                    }, 1000);
+                    }, time);
                 }
             }
         },
@@ -81,11 +84,14 @@ export default {
                 clearInterval(this.refreshInterval);
                 await this.initRobot({ uin, robotId: id });
             } catch (err) {
-                console.log(err);
+                let time = 1000;
+                if (err === 'timeout') {
+                    time = 60000;
+                }
                 if (this.show && (startTime === this.timestamp)) {
                     this.time = setTimeout(async () => {
                         await this.isLogin();
-                    }, 1000);
+                    }, time);
                 }
             }
         },
@@ -102,6 +108,8 @@ export default {
             clearTimeout(this.time);
             clearInterval(this.refreshInterval);
             this.closeBackDrop();
+            this.time = '';
+            this.refreshInterval = '';
             this.show = false;
             this.$emit('close');
         },

@@ -19,7 +19,7 @@
 <script>
 import Modal from '@/components/common/Modal';
 
-import { mapMutations } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 
 import RobotAPI from '@/api/Robot';
 
@@ -60,6 +60,8 @@ export default {
             'closeBackDrop',
             'openBackDrop',
             'loading',
+        ]),
+        ...mapActions([
             'loaded',
         ]),
     },

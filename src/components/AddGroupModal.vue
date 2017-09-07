@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 
 import Modal from '@/components/common/Modal';
 
@@ -106,6 +106,8 @@ export default {
             'closeBackDrop',
             'openBackDrop',
             'loading',
+        ]),
+        ...mapActions([
             'loaded',
         ]),
     },
@@ -135,7 +137,7 @@ h6 {
 }
 
 .body {
-    max-height: 600px;
+    max-height: 400px;
     overflow-x: scroll;
     margin-left: 2rem;
     padding-top: .8rem;

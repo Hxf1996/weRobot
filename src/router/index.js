@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-07 09:47:18
+* @Last Modified time: 2017-09-07 15:21:17
 */
 
 import Vue from 'vue';
@@ -10,7 +10,7 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
     // mode: 'history',
     routes: [
         {
@@ -61,6 +61,15 @@ export default new Router({
             path: '/operate/:id',
             name: 'operate',
             component: () => import('@/page/Operate'),
+            children: [
+                {
+                    path: 'redPacket',
+                    name: 'redPacket',
+                    component: () => import('@/page/Operate/RedPacket'),
+                },
+            ],
         },
     ],
 });
+
+export default router;

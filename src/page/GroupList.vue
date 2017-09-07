@@ -79,6 +79,8 @@ export default {
         ...mapMutations([
             'closeBackDrop',
             'loading',
+        ]),
+        ...mapActions([
             'loaded',
         ]),
         ...mapActions('Robot', [

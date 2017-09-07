@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 
 import Util from '@/libs/util';
 
@@ -75,6 +75,8 @@ export default {
         },
         ...mapMutations([
             'loading',
+        ]),
+        ...mapActions([
             'loaded',
         ]),
     },

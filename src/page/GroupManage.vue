@@ -4,7 +4,7 @@
         <nav class="nav">
             <router-link v-for="one in robotList" :key="one.id" :to="{ name: 'groupList', params: { id: one.id } }" class="nav-link" :class="{active: one.id === $route.params.id}">机器人：{{ one.nickname }}</router-link>
         </nav>
-        <router-view></router-view>
+        <router-view class="group-list-view"></router-view>
     </div>
 </template>
 
@@ -57,6 +57,7 @@ h4 {
     font-weight: 400;
     color: rgb(133, 135, 135);
     flex-grow: 0;
+    flex-shrink: 0;
     margin-bottom: 2rem;
 }
 
@@ -65,6 +66,7 @@ nav {
     margin-top: 1rem;
     padding-left: 4rem;
     flex-grow: 0;
+    flex-shrink: 0;
 
     & .nav-link {
         padding: .8rem 1.5rem;
@@ -75,5 +77,10 @@ nav {
     & .active {
         border-bottom: 2px solid rgb(185, 185, 185);
     }
+}
+
+.group-list-view {
+    flex-grow: 1;
+    overflow-y: scroll;
 }
 </style>
