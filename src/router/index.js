@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-06 11:26:47
+* @Last Modified time: 2017-09-07 09:47:18
 */
 
 import Vue from 'vue';
@@ -11,7 +11,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
+    // mode: 'history',
     routes: [
         {
             path: '/',

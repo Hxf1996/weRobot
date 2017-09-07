@@ -4,6 +4,9 @@
         <div class="robot-list">
             <div class="card" v-for="one in robotList" :key="one.id">
                 <div class="card-body">
+                    <button type="button" class="close" aria-label="Close" @click="openDelRobotModal(one)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <img :src="`${url}/image/qrcode/${one.headImgUrl}`" alt="头像">
                     <p class="card-text">机器人：{{ one.nickname }}</p>
                     <p class="card-text">状态：{{ one.status ? '在线' : '离线' }}</p>
@@ -18,12 +21,13 @@
         </div>
         <ol class="help">使用帮助：
             <li>如果尝试多次登录失败，请登录web微信（http://wx.qq.com），检查是否可以正常登录</li>
-            <li>为保证服务稳定，建议您优使用微信小号扫描完成机器人创建</li>
-            <li>若无微信小号，可使用常用微信账号扫码完成机器人创建</li>
+            <li>微信机器人登录后，请尽量避使用PC客户端登录或网页端登录微信，否则会导致机器人服务不稳定</li>
         </ol>
+        <delete-robot-modal :active="delRobotModal" :name="focusRobotName" :id="focusRobotId"
+            @activate="getRobotList" @close="closeDelRobotModal"></delete-robot-modal>
         <login-robot-modal :active="loginRobotModal" :name="focusRobotName"
             @activate="getRobotList" @close="closeLoginRobotModal"></login-robot-modal>
-        <logout-robot-modal :active="logoutRobotModal" :name="focusRobotName" :uin="focusRobotUin"
+        <logout-robot-modal :active="logoutRobotModal" :name="focusRobotName" :id="focusRobotId"
             @activate="getRobotList" @close="closeLogoutRobotModal"></logout-robot-modal>
     </div>
 </template>
@@ -33,6 +37,7 @@ import { mapState, mapActions } from 'vuex';
 
 import LoginRobotModal from '@/components/LoginRobotModal';
 import LogoutRobotModal from '@/components/LogoutRobotModal';
+import DeleteRobotModal from '@/components/DeleteRobotModal';
 
 import { baseURL } from '@/api/HTTP';
 
@@ -41,9 +46,10 @@ export default {
     data() {
         return {
             focusRobotName: '',
-            focusRobotUin: '',
+            focusRobotId: '',
             loginRobotModal: false,
             logoutRobotModal: false,
+            delRobotModal: false,
             url: baseURL,
         };
     },
@@ -60,9 +66,17 @@ export default {
         closeLogoutRobotModal() {
             this.logoutRobotModal = false;
         },
-        toogleRobotStatu({ status, nickname, uin }) {
+        openDelRobotModal({ nickname, id }) {
             this.focusRobotName = nickname;
-            this.focusRobotUin = uin;
+            this.focusRobotId = id;
+            this.delRobotModal = true;
+        },
+        closeDelRobotModal() {
+            this.delRobotModal = false;
+        },
+        toogleRobotStatu({ status, nickname, id }) {
+            this.focusRobotName = nickname;
+            this.focusRobotId = id;
             switch (status) {
             case 0:
                 this.openLoginRobotModal();
@@ -88,6 +102,7 @@ export default {
     components: {
         LoginRobotModal,
         LogoutRobotModal,
+        DeleteRobotModal,
     },
     computed: {
         ...mapState('User', [

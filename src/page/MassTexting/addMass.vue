@@ -72,7 +72,7 @@
             </div>
         </transition>
         <footer>
-            <button type="submit" class="save">保存</button>
+            <button type="submit" class="save" :disabled="addMassData.toGroupId.length === 0">保存</button>
         </footer>
     </form>
 </template>
@@ -133,7 +133,7 @@ export default {
             try {
                 const message = await GroupAPI.addMass({
                     ...this.addMassData,
-                    uin: this.robotList[0].uin,
+                    robotId: this.robotList[0].id,
                 });
                 this.loading({
                     text: message,
@@ -222,6 +222,10 @@ export default {
             background-color: rgb(85, 85, 85);
             color: #fff;
             border-radius: 0;
+
+            &[disabled=disabled] {
+                background-color: #cacaca;
+            }
         }
     }
 }

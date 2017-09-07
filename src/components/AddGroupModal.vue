@@ -63,6 +63,8 @@ export default {
                 this.loading({
                     text: message,
                 });
+                this.addGroupData = [];
+                this.selectAll = false;
                 this.loaded(1500);
                 this.$emit('submit');
                 this.close();

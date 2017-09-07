@@ -1,8 +1,8 @@
 /*
 * @Author: hxf
 * @Date:   2017-08-31 15:08:11
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-05 10:18:34
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-07 10:01:15
 */
 
 import HTTP from './HTTP';
@@ -121,6 +121,25 @@ const logout = (data) => {
     return promise;
 };
 
+const delRobot = (data) => {
+    const promise = new Promise((resolve, reject) => {
+        HTTP.get('/robot/delRobot', {
+            params: data,
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    resolve(response.data.message);
+                } else {
+                    reject(response.data.message);
+                }
+            })
+            .catch(() => {
+                reject('网络不稳定请刷新重试！');
+            });
+    });
+    return promise;
+};
+
 export default {
     getLoginQrcode,
     isScan,
@@ -128,4 +147,5 @@ export default {
     init,
     getList,
     logout,
+    delRobot,
 };

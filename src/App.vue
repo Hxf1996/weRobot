@@ -56,7 +56,6 @@ export default {
         const userToken = Util.getStorage('USER_TOKEN');
         if (Object.getOwnPropertyNames(userToken).length !== 0) {
             this.setUserToken(userToken);
-            await this.getRobotList();
         }
     },
     components: {
@@ -79,6 +78,11 @@ export default {
     watch: {
         async userToken() {
             await this.getRobotList();
+        },
+        $route() {
+            if (this.$route.name === 'robotManage') {
+                this.getRobotList();
+            }
         },
     },
     computed: {

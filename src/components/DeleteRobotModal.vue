@@ -7,9 +7,9 @@
             </button>
         </div>
         <div class="body">
-            <span>你确定要掉线<br/>机器人"{{ name }}"吗？</span>
+            <span>你确定要删除<br/>机器人"{{ name }}"吗？</span>
             <div class="modal-footer">
-                <button type="button" class="btn btn-submit" @click="submit">确定掉线</button>
+                <button type="button" class="btn btn-submit" @click="submit">确定删除</button>
                 <button type="button" class="btn btn-cancel" @click="close">取消</button>
             </div>
         </div>
@@ -24,7 +24,7 @@ import { mapMutations } from 'vuex';
 import RobotAPI from '@/api/Robot';
 
 export default {
-    name: 'LogoutRobotModal',
+    name: 'DeleteRobotModal',
     props: ['name', 'active', 'id'],
     data() {
         return {
@@ -37,7 +37,7 @@ export default {
                 text: '正在断线',
             });
             try {
-                const message = await RobotAPI.logout({ robotId: this.id });
+                const message = await RobotAPI.delRobot({ robotId: this.id });
                 this.loading({
                     text: message,
                 });

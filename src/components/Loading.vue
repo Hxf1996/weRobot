@@ -30,26 +30,26 @@ export default {
 .backdrop::before {
     content: '';
     display: block;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(216, 216, 216, 0.3);
-    z-index: 1020;
+    z-index: 1060;
 }
 
 .toast {
     width: 160px;
     height: 160px;
     border-radius: 10px;
-    position: absolute;
+    position: fixed;
     left: 50%;
     top: 50%;
     margin-top: -80px;
     margin-left: -80px;
     background-color: #252525;
-    z-index: 1021;
+    z-index: 1061;
 }
 
 .loading {
