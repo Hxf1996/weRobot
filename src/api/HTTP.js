@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-04-30 15:20:09
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-07 17:58:35
+* @Last Modified time: 2017-09-07 18:20:57
 */
 
 import Axios from 'axios';
@@ -14,9 +14,9 @@ const baseURL = 'http://daily.elephtribe.com/procurement';
 
 const HTTP = Axios.create({
     baseURL,
-    // transformResponse: [
-    //     data => JSON.parse(data),
-    // ],
+    transformResponse: [
+        data => JSON.parse(data),
+    ],
     withCredentials: true,
 });
 
