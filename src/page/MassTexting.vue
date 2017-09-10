@@ -16,18 +16,9 @@ import { mapState } from 'vuex';
 export default {
     name: 'MassTexting',
     created() {
-        setTimeout(() => {
-            if (this.robotList.length === 0) {
-                alert('请先添加机器人');
-                this.$router.push({
-                    name: 'robotManage',
-                });
-            } else {
-                this.$router.push({
-                    name: 'addMass',
-                });
-            }
-        }, 1000);
+        this.$router.push({
+            name: 'addMass',
+        });
     },
     data() {
         return {

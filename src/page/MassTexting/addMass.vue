@@ -15,7 +15,7 @@
         <div class="form-group row">
             <label for="texting" class="col-sm-2 col-form-label">群发文字&emsp;</label>
             <div class="col-sm-8">
-                <textarea class="form-control" id="texting" rows="3"
+                <textarea class="form-control" id="texting" rows="3" maxlength="1000"
                     v-model="addMassData.text"></textarea>
             </div>
         </div>
@@ -117,6 +117,13 @@ export default {
         async uploadImg(e) {
             this.isUpload = true;
             const file = e.target.files[0];
+            if (file.size > 8 * 1000 * 1000) {
+                this.loading({
+                    text: '图片最大8M',
+                });
+                this.loaded(1500);
+                return false;
+            }
             const param = new FormData();
             param.append('fileUpload', file, file.name);
             UploadAPI.uploadImg(param).then((response) => {
@@ -125,6 +132,7 @@ export default {
             }).catch((err) => {
                 console.log(err);
             });
+            return true;
         },
         async addMass() {
             this.loading({
@@ -194,7 +202,10 @@ export default {
             //     id = item.id;
             //     return true;
             // });
-            return this.robotList[0].id;
+            if (this.robotList[0]) {
+                return this.robotList[0].id;
+            }
+            return false;
         },
     },
 };

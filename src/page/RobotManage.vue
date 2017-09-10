@@ -51,6 +51,7 @@ export default {
             logoutRobotModal: false,
             delRobotModal: false,
             url: baseURL,
+            interval: '',
         };
     },
     methods: {
@@ -91,6 +92,17 @@ export default {
         ...mapActions('Robot', [
             'getRobotList',
         ]),
+    },
+    beforeRouteEnter(to, from, next) {
+        next((vm) => {
+            vm.interval = setInterval(() => {
+                vm.getRobotList();
+            }, 60000);
+        });
+    },
+    beforeRouteLeave(to, from, next) {
+        clearInterval(this.interval);
+        next();
     },
     watch: {
         robotList() {

@@ -2,7 +2,7 @@
     <div id="operate">
         <h4>{{ $route.params.nickName }}</h4>
         <nav>
-            <router-link v-for="(one, index) in navData" :key="index" :to="one.to" class="nav-link" :class="{active: one.to.name === $route.name}">{{ one.title }}</router-link>
+            <a v-for="(one, index) in navData" :key="index" @click="go(one)" class="nav-link" :class="{active: one.to.name === $route.name}">{{ one.title }}</a>
         </nav>
         <transition name="transparent" mode="out-in">
             <router-view class="container-fluid mass-content"></router-view>
@@ -16,16 +16,10 @@ import { mapState } from 'vuex';
 export default {
     name: 'Operate',
     created() {
-        setTimeout(() => {
-            if (this.robotList.length === 0) {
-                alert('请先添加机器人');
-                this.$router.push({
-                    name: 'robotManage',
-                });
-            } else {
-                this.$router.push(this.navData[0].to);
-            }
-        }, 1000);
+        this.$router.push({
+            ...this.navData[0].to,
+            ...this.routeData,
+        });
     },
     data() {
         return {
@@ -33,10 +27,6 @@ export default {
                 {
                     to: {
                         name: 'redPacket',
-                        params: {
-                            groupId: this.$route.params.id,
-                            nickName: this.$route.params.nickName,
-                        },
                     },
                     title: '群内拉新红包',
                 },
@@ -44,10 +34,28 @@ export default {
         };
     },
     methods: {
+        go(one) {
+            this.$router.push({
+                ...one.to,
+                ...this.routeData,
+            });
+        },
     },
-    components: {
+    watch: {
+        $route() {
+            this.$router.push({
+                ...this.navData[0].to,
+                ...this.routeData,
+            });
+        },
     },
     computed: {
+        routeData() {
+            return {
+                id: this.$route.params.id,
+                nickName: this.$route.params.nickName,
+            };
+        },
         ...mapState('Robot', {
             robotList: 'list',
         }),

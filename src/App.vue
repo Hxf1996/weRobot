@@ -52,7 +52,12 @@ import LoginModal from '@/components/LoginModal';
 
 export default {
     name: 'app',
-    async created() {
+    data() {
+        return {
+            time: '',
+        };
+    },
+    created() {
         const userToken = Util.getStorage('USER_TOKEN');
         if (userToken !== '') {
             this.setUserToken(userToken);
@@ -65,8 +70,26 @@ export default {
         LoginModal,
     },
     methods: {
+        async init() {
+            if (this.userToken === '' && this.$route.name !== 'index') {
+                alert('请先登录！');
+                this.$router.push({ name: 'index' });
+            }
+            if (this.robotList.length === 0 || this.$route.name === 'robotManage') {
+                await this.getRobotList();
+            }
+            if (this.$route.name !== 'robotManage' && this.$route.name !== 'index' && (this.robotList.length === 0 || this.robotList[0].status === 0)) {
+                alert('请先绑定并激活机器人');
+                this.$router.push({
+                    name: 'robotManage',
+                });
+            }
+        },
         go(to) {
-            this.$router.push(to);
+            if (this.time === '' || ((new Date().getTime() - this.time) >= 1000)) {
+                this.time = new Date().getTime();
+                this.$router.push(to);
+            }
         },
         ...mapActions('Robot', [
             'getRobotList',
@@ -76,17 +99,8 @@ export default {
         ]),
     },
     watch: {
-        async userToken() {
-            await this.getRobotList();
-        },
         $route() {
-            if (this.userToken === '' && this.$route.name !== 'index') {
-                alert('请先登录！');
-                this.$router.push({ name: 'index' });
-            }
-            if (this.$route.name === 'robotManage') {
-                this.getRobotList();
-            }
+            this.init();
         },
     },
     computed: {

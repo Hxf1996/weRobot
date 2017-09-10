@@ -13,22 +13,13 @@ import { mapState } from 'vuex';
 
 export default {
     name: 'GroupManage',
-    created() {
-        setTimeout(() => {
-            if (this.robotList.length === 0) {
-                alert('请先添加机器人');
-                this.$router.push({
-                    name: 'robotManage',
-                });
-            } else {
-                this.$router.push({
-                    name: 'groupList',
-                    params: {
-                        id: this.robotList[0].id,
-                    },
-                });
-            }
-        }, 1000);
+    mounted() {
+        this.$router.push({
+            name: 'groupList',
+            params: {
+                id: this.robotList[0].id,
+            },
+        });
     },
     data() {
         return {

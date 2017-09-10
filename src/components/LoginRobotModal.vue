@@ -43,7 +43,7 @@ export default {
                 });
                 this.setUUId(uuid);
                 this.qrCodeUrl = qrcode;
-                if (this.refreshInterval === '' || ((this.timestamp - new Date().getTime()) >= 60000)) {
+                if (this.refreshInterval === '' || ((new Date().getTime() - this.timestamp) >= 120000)) {
                     this.refreshInterval = setInterval(async () => {
                         await this.open();
                     }, 120000);
