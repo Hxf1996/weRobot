@@ -2,22 +2,25 @@
     <form id="red-package" @submit.prevent="submit">
         <div class="form-group row">
             <label for="status" class="col-sm-2 col-form-label">功能状态&emsp;&emsp;</label>
-            <div class="col-sm-8">
-                <input type="checkbox" class="toggle-button" id="status" v-model="status" v-if="!readOnly">
-                <span v-else>{{ statusStr }}</span>
+            <div class="col-sm-2">
+                <input type="checkbox" class="toggle-button" id="status" v-model="status">
             </div>
+            <span class="inline-margin" v-if="readOnly && status">红包状态：{{ statusStr }}</span>
         </div>
         <div class="form-group row" v-if="status">
             <label for="budget" class="col-sm-2 col-form-label">群内红包预算</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="budget" placeholder="元" v-model.number="budget" :readonly="readOnly">
+                <input type="number" class="form-control" id="budget" placeholder="元" v-model.number="budget" min="1" :readonly="readOnly">
             </div>
+            <span class="inline-margin" v-if="readOnly">剩余金额：{{ packetData.residueAmount /100 }}元</span>
         </div>
         <div class="form-group row" v-if="status">
             <label for="num" class="col-sm-2 col-form-label">红包发放个数</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="num" placeholder="个" v-model.number="packetData.redEnvelopesNums" :readonly="readOnly">
+                <input type="number" class="form-control" id="num" placeholder="个" min="1" :readonly="readOnly"
+                    v-model.number="packetData.redEnvelopesNums">
             </div>
+            <span class="inline-margin" v-if="readOnly">剩余数量：{{ packetData.residueNums }}个</span>
         </div>
         <div class="form-group row money" v-if="status">
             <label class="col-sm-2 col-form-label">拉新红包金额</label>
@@ -32,9 +35,10 @@
                     <label class="form-check-label" for="random">
                         <input class="form-check-input" type="radio" name="type" id="random" :value="2" :disabled="readOnly"
                             v-model="packetData.redEnvelopesType">随机红包
-                        <input type="text" :readonly="readOnly"
+                        <input type="number" style="width: 80px;" min="1" :max="budget" :readonly="readOnly"
                             v-model.number="amountRandomLower" v-if="packetData.redEnvelopesType === 2">
-                        <input type="text" :readonly="readOnly"
+                        <span v-if="packetData.redEnvelopesType === 2">-&ensp;</span>
+                        <input type="number" style="width: 80px;" :min="amountRandomLower" :max="budget" :readonly="readOnly"
                             v-model.number="amountRandomUpper" v-if="packetData.redEnvelopesType === 2">
                     </label>
                 </div>
@@ -43,14 +47,14 @@
         <div class="form-group row" v-if="status">
             <label for="header-text" class="col-sm-2 col-form-label">红包页文案</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="header-text" placeholder="页头文案" :readonly="readOnly"
+                <input type="text" class="form-control" id="header-text" placeholder="红包说明文案"maxlength="6" :readonly="readOnly"
                     v-model="packetData.pageDoc1">
             </div>
         </div>
         <div class="form-group row" v-if="status">
             <label for="bottom-text" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-4 ">
-                <input type="text" class="form-control" id="bottom-text" placeholder="页尾文案" :readonly="readOnly"
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="bottom-text" placeholder="邀请拉新文案"maxlength="25" :readonly="readOnly"
                     v-model="packetData.pageDoc2">
             </div>
         </div>
@@ -64,10 +68,10 @@
                     </label>
                 </div>
                 <div class="form-check">
-                    <label class="form-check-label" for="random">
+                    <label class="form-check-label">
                         <input class="form-check-input" type="radio" name="limit" :value="true" :disabled="readOnly"
                             v-model="packetData.timesLimit">限制次数
-                        <input type="number" placeholder="次" :readonly="readOnly"
+                        <input type="number" placeholder="次" min="1" style="width: 80px;" :readonly="readOnly"
                             v-model.number="packetData.timesLimitUpper" v-if="packetData.timesLimit">
                     </label>
                     <small class="form-text text-muted">单人邀请他人入群，奖励到达上限后，不再发放</small>
@@ -75,7 +79,7 @@
             </div>
         </div>
         <footer>
-            <button type="submit" class="save" :disabled="readOnly">保存</button>
+            <button type="submit" class="save">保存</button>
         </footer>
     </form>
 </template>
@@ -155,7 +159,7 @@ export default {
                 this.loading({
                     text: message,
                 });
-                this.loaded(1500);
+                await this.getConfig();
             } catch (err) {
                 this.loading({
                     text: err,
@@ -288,7 +292,8 @@ export default {
     }
 }
 
-.random {
+.inline-margin {
+    line-height: 2.2rem;
 }
 
 .toggle-button {

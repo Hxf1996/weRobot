@@ -2,7 +2,7 @@
 * @Author: hxf
 * @Date:   2017-08-31 15:08:11
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-07 16:29:24
+* @Last Modified time: 2017-09-11 14:07:16
 */
 
 import HTTP from './HTTP';
@@ -35,12 +35,12 @@ const isScan = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.status);
+                    reject(response.data.message);
                 }
             })
             .catch((err) => {
                 if (err.response.status) {
-                    reject('timeout');
+                    reject(err.response.message);
                 }
                 reject('网络不稳定请刷新重试！');
             });
@@ -57,12 +57,12 @@ const isLogin = (data) => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.status);
+                    reject(response.data.message);
                 }
             })
             .catch((err) => {
                 if (err.response.status) {
-                    reject('timeout');
+                    reject(err.response.message);
                 }
                 reject('网络不稳定请刷新重试！');
             });

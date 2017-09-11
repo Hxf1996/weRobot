@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 
 import Modal from '@/components/common/Modal';
 import RobotAPI from '@/api/Robot';
@@ -32,29 +32,36 @@ export default {
             time: '',
             show: false,
             timestamp: '',
+            stopAllTime: '',
         };
     },
     methods: {
         async open() {
             try {
+                // 记录开始时间
                 this.timestamp = new Date().getTime();
                 const { uuid, qrcode } = await RobotAPI.getLoginQrcode({
                     userId: this.userToken,
                 });
                 this.setUUId(uuid);
                 this.qrCodeUrl = qrcode;
-                if (this.refreshInterval === '' || ((new Date().getTime() - this.timestamp) >= 120000)) {
-                    this.refreshInterval = setInterval(async () => {
-                        await this.open();
-                    }, 120000);
-                }
                 await this.isScan();
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
         // 判断是否扫码
         async isScan() {
+            if (new Date().getTime() - this.timestamp > 300000) {
+                this.loading({
+                    text: '超时，请刷新',
+                });
+                this.loaded(1500);
+                return false;
+            }
             const startTime = this.timestamp;
             try {
                 await RobotAPI.isScan({
@@ -63,18 +70,30 @@ export default {
                 });
                 await this.isLogin();
             } catch (err) {
-                let time = 1000;
-                if (err === 'timeout') {
-                    time = 60000;
-                }
-                if (this.show && (startTime === this.timestamp)) {
-                    this.time = setTimeout(async () => {
-                        await this.isScan();
-                    }, time);
+                if (err === '等待扫码') {
+                    if (this.show && (startTime === this.timestamp)) {
+                        this.time = setTimeout(async () => {
+                            await this.isScan();
+                        }, 1000);
+                    }
+                } else {
+                    this.init();
+                    this.loading({
+                        text: err,
+                    });
+                    this.loaded(1500);
                 }
             }
+            return true;
         },
         async isLogin() {
+            if (new Date().getTime() - this.timestamp > 300000) {
+                this.loading({
+                    text: '超时，请刷新',
+                });
+                this.loaded(1500);
+                return false;
+            }
             const startTime = this.timestamp;
             try {
                 const { uin, id } = await RobotAPI.isLogin({
@@ -84,16 +103,21 @@ export default {
                 clearInterval(this.refreshInterval);
                 await this.initRobot({ uin, robotId: id });
             } catch (err) {
-                let time = 1000;
-                if (err === 'timeout') {
-                    time = 60000;
-                }
-                if (this.show && (startTime === this.timestamp)) {
-                    this.time = setTimeout(async () => {
-                        await this.isLogin();
-                    }, time);
+                if (err === '等待确认') {
+                    if (this.show && (startTime === this.timestamp)) {
+                        this.time = setTimeout(async () => {
+                            await this.isLogin();
+                        }, 1000);
+                    }
+                } else {
+                    this.init();
+                    this.loading({
+                        text: err,
+                    });
+                    this.loaded(1500);
                 }
             }
+            return true;
         },
         async initRobot(initData) {
             try {
@@ -101,24 +125,34 @@ export default {
                 await RobotAPI.init(initData);
                 this.$emit('activate');
             } catch (err) {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             }
         },
         close() {
+            this.init();
+            this.show = false;
+            this.closeBackDrop();
+            this.$emit('close');
+        },
+        init() {
             clearTimeout(this.time);
             clearInterval(this.refreshInterval);
-            this.closeBackDrop();
             this.time = '';
             this.refreshInterval = '';
-            this.show = false;
-            this.$emit('close');
         },
         ...mapMutations([
             'closeBackDrop',
             'openBackDrop',
+            'loading',
         ]),
         ...mapMutations('User', [
             'setUUId',
+        ]),
+        ...mapActions([
+            'loaded',
         ]),
     },
     components: {
