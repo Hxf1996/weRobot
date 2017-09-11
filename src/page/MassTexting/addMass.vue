@@ -117,6 +117,13 @@ export default {
         async uploadImg(e) {
             this.isUpload = true;
             const file = e.target.files[0];
+            if (!/(.*)\.(jpg|gif|jpeg|png)$/.test(file.type)) {
+                this.loading({
+                    text: '请上传图片',
+                });
+                this.loaded(1500);
+                return false;
+            }
             if (file.size > 8 * 1000 * 1000) {
                 this.loading({
                     text: '图片最大8M',

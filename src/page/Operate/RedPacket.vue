@@ -146,7 +146,14 @@ export default {
                 timesLimitUpper: '',
             };
         },
-        async submit() {
+        submit() {
+            if (this.readOnly) {
+                this.closePacket();
+            } else {
+                this.openPacket();
+            }
+        },
+        async openPacket() {
             this.loading({
                 text: '正在保存',
             });
@@ -154,6 +161,25 @@ export default {
                 const message = await RedPacketAPI.redEnvelopesConfig({
                     ...this.packetData,
                     userId: this.userId,
+                    groupId: this.$route.params.id,
+                });
+                this.loading({
+                    text: message,
+                });
+                await this.getConfig();
+            } catch (err) {
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
+            }
+        },
+        async closePacket() {
+            this.loading({
+                text: '正在关闭',
+            });
+            try {
+                const message = await RedPacketAPI.redEnvelopesClose({
                     groupId: this.$route.params.id,
                 });
                 this.loading({
