@@ -117,7 +117,7 @@ export default {
     methods: {
         async uploadImg(e) {
             const file = e.target.files[0];
-            if (!/(.*)\.(jpg|gif|jpeg|png)$/.test(file.type)) {
+            if (!(/(.*)\.(jpg|gif|jpeg|png)$/.test(file.name))) {
                 this.loading({
                     text: '请上传图片',
                 });

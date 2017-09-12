@@ -79,7 +79,7 @@
             </div>
         </div>
         <footer>
-            <button type="submit" class="save">保存</button>
+            <button type="submit" class="save" :disabled="isSave">保存</button>
         </footer>
     </form>
 </template>
@@ -222,6 +222,28 @@ export default {
                     this.packetData.status = 1;
                 }
             },
+        },
+        isSave() {
+            if (this.packetData.status && this.readOnly) {
+                return true;
+            }
+            if (this.packetData.budget === '' || this.packetData.redEnvelopesNums === '') {
+                return true;
+            }
+            if (this.packetData.pageDoc1 === '' || this.packetData.pageDoc2 === '') {
+                return true;
+            }
+            if (this.packetData.redEnvelopesType === 2) {
+                if (this.packetData.amountRandomLower === '' || this.packetData.amountRandomUpper === '') {
+                    return true;
+                }
+            }
+            if (this.packetData.timesLimit) {
+                if (this.packetData.timesLimitUpper === '') {
+                    return true;
+                }
+            }
+            return false;
         },
         statusStr() {
             let str = '';

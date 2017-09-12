@@ -2,15 +2,15 @@
 * @Author: 94078
 * @Date:   2017-04-30 15:20:09
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-12 12:29:40
+* @Last Modified time: 2017-09-12 13:16:14
 */
 
 import Axios from 'axios';
 
 // daily
-const baseURL = 'http://daily.elephtribe.com/procurement';
+// const baseURL = 'http://daily.elephtribe.com/procurement';
 
-// const baseURL = 'http://172.172.7.74:8080/procurement';
+const baseURL = 'http://172.172.7.74:8080/procurement';
 
 const HTTP = Axios.create({
     baseURL,
