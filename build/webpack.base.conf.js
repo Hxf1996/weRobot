@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-05 15:59:30
+* @Last Modified time: 2017-09-12 17:06:31
 */
 /* eslint-disable */
 
@@ -15,6 +15,15 @@ function resolve (dir) {
     return path.join(__dirname, '..', dir);
 }
 
+// 获得打包类型 默认daily
+var buildType = JSON.parse(process.env.npm_config_argv)['remain'][0] || 'daily';
+var assetsPublicPath = '';
+if (process.env.NODE_ENV === 'production') {
+    assetsPublicPath = config.build.assetsPublicPath[buildType];
+} else {
+    assetsPublicPath = config.dev.assetsPublicPath;
+}
+
 module.exports = {
     entry: {
         app: './src/main.js'
@@ -22,9 +31,7 @@ module.exports = {
     output: {
         path: config.build.assetsRoot,
         filename: '[name].js',
-        publicPath: process.env.NODE_ENV === 'production'
-            ? config.build.assetsPublicPath
-            : config.dev.assetsPublicPath
+        publicPath: assetsPublicPath
     },
     resolve: {
         extensions: ['.js', '.vue', '.json', '.css'],

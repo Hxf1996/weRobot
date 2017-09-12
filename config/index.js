@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-12 15:38:10
+* @Last Modified time: 2017-09-12 17:06:39
 */
 /* eslint-disable */
 
@@ -14,7 +14,9 @@ module.exports = {
         index: path.resolve(__dirname, '../dist/index.html'),
         assetsRoot: path.resolve(__dirname, '../dist'),
         assetsSubDirectory: 'static',
-        assetsPublicPath: 'http://cdndaily.elephtribe.com/crm/weChatRobot_branch/daily/dist/',
+        assetsPublicPath: {
+            daily: 'http://cdndaily.elephtribe.com/crm/weChatRobot_branch/daily/dist/',
+        },
         productionSourceMap: true,
         // setting to `true`, make sure to: npm install --save-dev compression-webpack-plugin
         productionGzip: false,
@@ -28,13 +30,6 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/procurement': {
-                target: 'http://172.172.7.74:8080/',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/procurement': '/procurement'
-                }
-            },
         },
         cssSourceMap: false
     }

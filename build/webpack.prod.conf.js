@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-10 23:43:03
+* @Last Modified time: 2017-09-12 17:06:57
 */
 /* eslint-disable */
 
@@ -20,6 +20,8 @@ var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 var env = config.build.env;
+var buildType = JSON.parse(process.env.npm_config_argv)['remain'][0] || 'daily';
+env['API_ROOT'] = env['API_ROOT'][buildType];
 
 var webpackConfig = merge(baseWebpackConfig, {
     module: {
