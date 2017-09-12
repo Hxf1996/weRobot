@@ -12,16 +12,22 @@
             </thead>
             <tbody>
                 <tr v-for="one in massList">
-                    <th scope="row" v-if="one.msgType === 1">
+                    <td class="msg" scope="row" v-if="one.msgType === 1">
                         {{ one.contentOrUrl }}
-                    </th>
-                    <th scope="row" v-if="one.msgType === 2">
+                    </td>
+                    <td scope="row" v-if="one.msgType === 2">
                         <img :src="one.contentOrUrl" alt="群发图片">
-                    </th>
-                    <td>{{ one.gmtExecute | formatDate }}</td>
-                    <td>{{ one.toNickname }}</td>
-                    <td>{{ one.robotName }}</td>
-                    <td>{{ one.sendStatusStr }}</td>
+                    </td>
+                    <td class="date">{{ one.gmtExecute | formatDate }}</td>
+                    <td class="group" :class="{ list: one.toNickname.length > 1 }"
+                        @click="openGroupList">
+                        {{ one.toNickname[0] }}
+                        <ul class="group-list">
+                            <li v-for="(name, index) in one.toNickname" :key="index">{{ name }}</li>
+                        </ul>
+                    </td>
+                    <td class="name">{{ one.robotName }}</td>
+                    <td class="statu">{{ one.sendStatusStr }}</td>
                 </tr>
             </tbody>
         </table>
@@ -46,6 +52,13 @@ export default {
         };
     },
     methods: {
+        openGroupList(one) {
+            if (Util.hasClass(one.target, 'active')) {
+                Util.removeClass(one.target, 'active');
+            } else {
+                Util.addClass(one.target, 'active');
+            }
+        },
         async init() {
             this.loading({
                 text: '正在加载',
@@ -65,6 +78,9 @@ export default {
                     records[index].sendStatusStr = sendStatusMap[mass.sendStatus];
                 });
                 this.loaded(100);
+                records.forEach((item, index) => {
+                    records[index].toNickname = item.toNickname.split(/,/);
+                });
                 this.massList.push(...records);
             } catch (err) {
                 this.loading({
@@ -103,10 +119,75 @@ export default {
 
 <style scoped>
 #mass-record {
+    color: #585b60;
 }
 
 img {
     max-width: 20px;
     height: auto;
+}
+
+table th {
+    text-align: center;
+}
+
+.msg {
+    max-width: 400px;
+    max-height: 49px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.group {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.group.list::after {
+    content: '\25BC';
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 25%;
+}
+
+.date {
+    text-align: center;
+}
+
+.name {
+    min-width: 100px;
+    text-align: center;
+}
+
+.statu {
+    min-width: 170px;
+    text-align: center;
+}
+
+.group-list {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    z-index: 2;
+    border: 1px solid #eeeeee;
+    padding: .5rem 1rem;
+    margin-top: 12px;
+
+    & li {
+        list-style: none;
+    }
+}
+
+.active {
+    overflow: unset;
+
+    & .group-list {
+        display: block;
+    }
 }
 </style>

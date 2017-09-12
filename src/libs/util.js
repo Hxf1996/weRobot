@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-07-21 16:44:53
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-07 14:36:48
+* @Last Modified time: 2017-09-12 12:14:14
 */
 
 const getStorage = (key) => {
@@ -38,8 +38,28 @@ const formatDate = (timestamp, format) => {
     });
 };
 
+const addClass = (el, cls) => {
+    const objClass = el.className;
+    const blank = (objClass !== '') ? ' ' : '';
+    const added = objClass + blank + cls;
+    el.className = added;
+};
+
+const removeClass = (el, cls) => {
+    let objClass = ` ${el.className} `;
+    objClass = objClass.replace(/(\s+)/gi, ' ');
+    let removed = objClass.replace(` ${cls} `, ' ');
+    removed = removed.replace(/(^\s+)|(\s+$)/g, '');
+    el.className = removed;
+};
+
+const hasClass = (el, cls) => !!el.className.match(new RegExp(`(\\s|^)${cls}(\\s|$)`));
+
 export default {
     getStorage,
     setStorage,
     formatDate,
+    addClass,
+    removeClass,
+    hasClass,
 };

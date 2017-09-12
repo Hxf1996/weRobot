@@ -80,9 +80,9 @@ export default {
             }
             if (this.$route.name !== 'robotManage' && this.$route.name !== 'index' && (this.robotList.length === 0 || this.robotList[0].status === 0)) {
                 alert('请先绑定并激活机器人');
-                this.$router.push({
-                    name: 'robotManage',
-                });
+                // this.$router.push({
+                //     name: 'robotManage',
+                // });
             }
         },
         go(to) {

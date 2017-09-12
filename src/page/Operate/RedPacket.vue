@@ -5,24 +5,24 @@
             <div class="col-sm-2">
                 <input type="checkbox" class="toggle-button" id="status" v-model="status">
             </div>
-            <span class="inline-margin" v-if="readOnly && status">红包状态：{{ statusStr }}</span>
+            <span class="inline-margin" v-show="readOnly && status">红包状态：{{ statusStr }}</span>
         </div>
-        <div class="form-group row" v-if="status">
+        <div class="form-group row" v-show="status">
             <label for="budget" class="col-sm-2 col-form-label">群内红包预算</label>
             <div class="col-sm-2">
                 <input type="number" class="form-control" id="budget" placeholder="元" v-model.number="budget" min="1" :readonly="readOnly">
             </div>
-            <span class="inline-margin" v-if="readOnly">剩余金额：{{ packetData.residueAmount /100 }}元</span>
+            <span class="inline-margin" v-show="readOnly">剩余金额：{{ packetData.residueAmount /100 }}元</span>
         </div>
-        <div class="form-group row" v-if="status">
+        <div class="form-group row" v-show="status">
             <label for="num" class="col-sm-2 col-form-label">红包发放个数</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="num" placeholder="个" min="1" :readonly="readOnly"
+                <input type="number" class="form-control" id="num" placeholder="个" :max="budget" :readonly="readOnly"
                     v-model.number="packetData.redEnvelopesNums">
             </div>
-            <span class="inline-margin" v-if="readOnly">剩余数量：{{ packetData.residueNums }}个</span>
+            <span class="inline-margin" v-show="readOnly">剩余数量：{{ packetData.residueNums }}个</span>
         </div>
-        <div class="form-group row money" v-if="status">
+        <div class="form-group row money" v-show="status">
             <label class="col-sm-2 col-form-label">拉新红包金额</label>
             <div class="col-sm-8">
                 <div class="form-check">
@@ -36,29 +36,29 @@
                         <input class="form-check-input" type="radio" name="type" id="random" :value="2" :disabled="readOnly"
                             v-model="packetData.redEnvelopesType">随机红包
                         <input type="number" style="width: 80px;" min="1" :max="budget" :readonly="readOnly"
-                            v-model.number="amountRandomLower" v-if="packetData.redEnvelopesType === 2">
-                        <span v-if="packetData.redEnvelopesType === 2">-&ensp;</span>
+                            v-model.number="amountRandomLower" v-show="packetData.redEnvelopesType === 2">
+                        <span v-show="packetData.redEnvelopesType === 2">-&ensp;</span>
                         <input type="number" style="width: 80px;" :min="amountRandomLower" :max="budget" :readonly="readOnly"
-                            v-model.number="amountRandomUpper" v-if="packetData.redEnvelopesType === 2">
+                            v-model.number="amountRandomUpper" v-show="packetData.redEnvelopesType === 2">
                     </label>
                 </div>
             </div>
         </div>
-        <div class="form-group row" v-if="status">
+        <div class="form-group row" v-show="status">
             <label for="header-text" class="col-sm-2 col-form-label">红包页文案</label>
             <div class="col-sm-4">
                 <input type="text" class="form-control" id="header-text" placeholder="红包说明文案"maxlength="6" :readonly="readOnly"
                     v-model="packetData.pageDoc1">
             </div>
         </div>
-        <div class="form-group row" v-if="status">
+        <div class="form-group row" v-show="status">
             <label for="bottom-text" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-4">
                 <input type="text" class="form-control" id="bottom-text" placeholder="邀请拉新文案"maxlength="25" :readonly="readOnly"
                     v-model="packetData.pageDoc2">
             </div>
         </div>
-        <div class="form-group row money" v-if="status">
+        <div class="form-group row money" v-show="status">
             <label class="col-sm-2 col-form-label">单人邀请奖励数</label>
             <div class="col-sm-8">
                 <div class="form-check">
@@ -72,7 +72,7 @@
                         <input class="form-check-input" type="radio" name="limit" :value="true" :disabled="readOnly"
                             v-model="packetData.timesLimit">限制次数
                         <input type="number" placeholder="次" min="1" style="width: 80px;" :readonly="readOnly"
-                            v-model.number="packetData.timesLimitUpper" v-if="packetData.timesLimit">
+                            v-model.number="packetData.timesLimitUpper" v-show="packetData.timesLimit">
                     </label>
                     <small class="form-text text-muted">单人邀请他人入群，奖励到达上限后，不再发放</small>
                 </div>
@@ -114,7 +114,7 @@ export default {
     methods: {
         async getConfig() {
             this.loading({
-                text: '正在初始化',
+                text: '正在加载',
             });
             try {
                 const entry = await RedPacketAPI.getEnvelopesConfig({ groupId: this.$route.params.id });
@@ -124,7 +124,7 @@ export default {
                     this.readOnly = true;
                     this.packetData = entry;
                 }
-                this.loaded(1500);
+                this.loaded(100);
             } catch (err) {
                 this.loading({
                     text: err,

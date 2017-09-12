@@ -72,7 +72,8 @@
             </div>
         </transition>
         <footer>
-            <button type="submit" class="save" :disabled="addMassData.toGroupId.length === 0">保存</button>
+            <button type="submit" class="save"
+                :disabled="isSave">保存</button>
         </footer>
     </form>
 </template>
@@ -115,7 +116,6 @@ export default {
     },
     methods: {
         async uploadImg(e) {
-            this.isUpload = true;
             const file = e.target.files[0];
             if (!/(.*)\.(jpg|gif|jpeg|png)$/.test(file.type)) {
                 this.loading({
@@ -131,6 +131,7 @@ export default {
                 this.loaded(1500);
                 return false;
             }
+            this.isUpload = true;
             const param = new FormData();
             param.append('fileUpload', file, file.name);
             UploadAPI.uploadImg(param).then((response) => {
@@ -211,6 +212,15 @@ export default {
             // });
             if (this.robotList[0]) {
                 return this.robotList[0].id;
+            }
+            return false;
+        },
+        isSave() {
+            if ((this.addMassData.toGroupId.length === 0)) {
+                return true;
+            }
+            if ((this.addMassData.text === '') && (this.addMassData.srcUrl === '')) {
+                return true;
             }
             return false;
         },
