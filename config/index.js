@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-11 19:27:29
+* @Last Modified time: 2017-09-12 15:38:10
 */
 /* eslint-disable */
 
@@ -28,6 +28,13 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
+            '/procurement': {
+                target: 'http://172.172.7.74:8080/',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/procurement': '/procurement'
+                }
+            },
         },
         cssSourceMap: false
     }

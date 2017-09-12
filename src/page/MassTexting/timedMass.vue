@@ -18,7 +18,7 @@
                     <td scope="row" v-if="one.msgType === 2">
                         <img :src="one.contentOrUrl" alt="群发图片">
                     </td>
-                    <td class="date">{{ one.gmtExecute | formatDate }}</td>
+                    <td class="date">{{ one.gmtFixedExecute | formatDate }}</td>
                     <td class="group" :class="{ list: one.toNickname.length > 1 }"
                         @click="openGroupList">
                         {{ one.toNickname[0] }}

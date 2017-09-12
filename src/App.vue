@@ -78,11 +78,13 @@ export default {
             if (this.robotList.length === 0 || this.$route.name === 'robotManage') {
                 await this.getRobotList();
             }
-            if (this.$route.name !== 'robotManage' && this.$route.name !== 'index' && (this.robotList.length === 0 || this.robotList[0].status === 0)) {
-                alert('请先绑定并激活机器人');
-                // this.$router.push({
-                //     name: 'robotManage',
-                // });
+            if (this.$route.name !== 'robotManage' && this.$route.name !== 'index') {
+                if (this.robotList.length === 0 || this.robotList[0].status === 0) {
+                    alert('请先绑定并激活机器人');
+                    this.$router.push({
+                        name: 'robotManage',
+                    });
+                }
             }
         },
         go(to) {

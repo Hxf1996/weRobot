@@ -138,7 +138,10 @@ export default {
                 this.isUpload = false;
                 this.addMassData.srcUrl = `http://cdn.elephtribe.com/${response.data.entry[0]}`;
             }).catch((err) => {
-                console.log(err);
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
             });
             return true;
         },
