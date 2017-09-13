@@ -1,15 +1,16 @@
 /*
 * @Author: hxf
 * @Date:   2017-08-31 12:33:30
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-04 19:32:44
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-13 08:48:03
 */
 
 import Axios from 'axios';
+import { baseURL } from './HTTP';
 
 const login = (data) => {
     const promise = new Promise((resolve, reject) => {
-        Axios.post('http://daily.elephtribe.com/member/login.do', {
+        Axios.post(`${baseURL}/member/login.do`, {
             ...data,
             role: 'crm',
         }, {
