@@ -1,11 +1,12 @@
 /*
 * @Author: hxf
 * @Date:   2017-09-04 11:29:50
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-04 19:33:18
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-13 08:47:20
 */
 
 import Axios from 'axios';
+import { baseURL } from './HTTP';
 
 const uploadImg = (data) => {
     const config = {
@@ -14,7 +15,7 @@ const uploadImg = (data) => {
         },
         withCredentials: true,
     };
-    return Axios.post('http://daily.elephtribe.com/message/oss/imgUpload', data, config);
+    return Axios.post(`${baseURL}/message/oss/imgUpload`, data, config);
 };
 
 export default {
