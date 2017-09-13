@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-12 17:06:31
+* @Last Modified time: 2017-09-13 00:48:09
 */
 /* eslint-disable */
 
@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
     assetsPublicPath = config.dev.assetsPublicPath;
 }
 
-module.exports = {
+var baseConfig = {
     entry: {
         app: './src/main.js'
     },
@@ -78,3 +78,17 @@ module.exports = {
         }]
     }
 };
+
+if (process.env.NODE_ENV === 'production') {
+    baseConfig.module.rules.push({
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: [resolve('src')],
+        options: {
+            formatter: require('eslint-friendly-formatter')
+        }
+    });
+}
+
+module.exports = baseConfig;

@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-12 17:43:22
+* @Last Modified time: 2017-09-12 22:31:07
 */
 /* eslint-disable */
 
@@ -92,9 +92,9 @@ var webpackConfig = merge(baseWebpackConfig, {
         new SWPrecacheWebpackPlugin({
             cacheId: 'my-vue-app',
             filename: 'service-worker.js',
-            staticFileGlobs: ['dist/**/*.{js,html,css}'],
+            staticFileGlobs: [config.entry + '/**/*.{js,html,css}'],
             minify: true,
-            stripPrefix: 'dist/'
+            stripPrefix: config.entry + '/'
         })
     ]
 });
