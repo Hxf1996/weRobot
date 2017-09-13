@@ -83,8 +83,8 @@ import { mapState, mapMutations, mapActions } from 'vuex';
 
 import Util from '@/libs/util';
 
-import Datepicker from '@/components/common/Datepicker';
-import Timepicker from '@/components/common/Timepicker';
+import Datepicker from '@/components/common/DatePicker';
+import Timepicker from '@/components/common/TimePicker';
 
 import UploadAPI from '@/api/Upload';
 import GroupAPI from '@/api/Group';
