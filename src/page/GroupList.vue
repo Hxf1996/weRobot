@@ -12,17 +12,20 @@
                 </button>
             </li>
         </transition-group>
-        <delete-group-modal :active="deteleGroupModal" :name="deleteData.name"
-            @submit="deleteGroup(deleteData.id)" @close="closeDeleteGroup"></delete-group-modal>
         <add-group-modal :active="addGroupModal"
-            @close="closeAddGroupModal" @submit="getGroupList"></add-group-modal>
+            @close="closeAddGroupModal" @successAddGroup="getGroupList"></add-group-modal>
+        <message-box :active="deteleGroupModal" :title="''"
+            @close="closeDeleteGroup" @submit="deleteGroup(deleteData.id)">
+            <span>你您确定要删除“{{ deleteData.name }}“群么？<br/>删除后该群将不再提供机器人服务</span>
+        </message-box>
     </div>
 </template>
 
 <script>
 import { mapMutations, mapState, mapActions } from 'vuex';
-import DeleteGroupModal from '@/components/DeleteGroupModal';
+
 import AddGroupModal from '@/components/AddGroupModal';
+import MessageBox from '@/components/common/MessageBox';
 
 import GroupAPI from '@/api/Group';
 
@@ -50,19 +53,16 @@ export default {
                 text: '正在删除',
             });
             try {
-                const message = await GroupAPI.updateGroup([
+                await GroupAPI.updateGroup([
                     {
                         id,
                         isMonitor: false,
                         isAtReply: false,
                     },
                 ]);
-                this.loading({
-                    text: message,
-                });
-                this.loaded(1500);
+                await this.getGroupList();
+                this.loaded(100);
                 this.closeDeleteGroup();
-                this.getGroupList();
             } catch (err) {
                 this.loading({
                     text: err,
@@ -88,8 +88,8 @@ export default {
         ]),
     },
     components: {
-        DeleteGroupModal,
         AddGroupModal,
+        MessageBox,
     },
     computed: {
         ...mapState('Robot', {

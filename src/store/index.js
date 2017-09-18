@@ -2,15 +2,15 @@
 * @Author: 94078
 * @Date:   2017-04-15 11:22:00
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-13 00:38:37
+* @Last Modified time: 2017-09-18 14:01:24
 */
 
 import Vue from 'vue';
 import Vuex from 'vuex';
 
 import actions from './actions';
-import * as getters from './getters';
-import * as mutations from './mutations';
+import getters from './getters';
+import mutations from './mutations';
 
 import User from './modules/User';
 import Robot from './modules/Robot';
@@ -21,7 +21,6 @@ export default new Vuex.Store({
     strict: true,
     state: {
         backDrop: false,
-        loginModal: false,
         loading: {
             active: false,
             type: 'loading',

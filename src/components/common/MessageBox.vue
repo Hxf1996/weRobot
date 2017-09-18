@@ -1,30 +1,31 @@
 <template>
     <modal :active="show" @toogle="close">
         <div class="modal-header">
-            <h6></h6>
-            <button type="button" class="close" aria-label="Close"
-                @click="close">
+            <h6>{{ title }}</h6>
+            <button type="button" class="close" aria-label="Close" @click="close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
         <div class="body">
-            <span>您确定要删除“{{ name }}“群么？<br/>删除后该群将不再提供机器人服务</span>
+            <div class="slot">
+                <slot></slot>
+            </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-submit" @click="submit">确定删除</button>
+            <button type="button" class="btn btn-submit" @click="submit">确定</button>
             <button type="button" class="btn btn-cancel" @click="close">取消</button>
         </div>
     </modal>
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
-
 import Modal from '@/components/common/Modal';
 
+import { mapMutations } from 'vuex';
+
 export default {
-    name: 'DeleteGroupModal',
-    props: ['active', 'name'],
+    name: 'MessageBox',
+    props: ['active', 'title'],
     data() {
         return {
             show: false,
@@ -32,8 +33,12 @@ export default {
     },
     methods: {
         submit() {
-            this.close();
             this.$emit('submit');
+            this.close();
+        },
+        open() {
+            this.openBackDrop();
+            this.show = true;
         },
         close() {
             this.closeBackDrop();
@@ -46,10 +51,9 @@ export default {
         ]),
     },
     watch: {
-        active() {
-            this.show = this.active;
-            if (this.show) {
-                this.openBackDrop();
+        active(active) {
+            if (active) {
+                this.open();
             }
         },
     },
@@ -61,7 +65,7 @@ export default {
 
 <style scoped>
 .body {
-    & span {
+    & .slot {
         color: rgb(88, 91, 96);
         text-align: center;
         padding-top: 2rem;

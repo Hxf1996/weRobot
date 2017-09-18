@@ -2,7 +2,7 @@
 * @Author: hxf
 * @Date:   2017-08-31 15:08:11
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-11 14:07:16
+* @Last Modified time: 2017-09-18 17:43:48
 */
 
 import HTTP from './HTTP';
@@ -146,6 +146,25 @@ const delRobot = (data) => {
     return promise;
 };
 
+const pushLogin = (data) => {
+    const promise = new Promise((resolve, reject) => {
+        HTTP.get('/robot/pushLogin', {
+            params: data,
+        })
+            .then((response) => {
+                if (response.data.status) {
+                    resolve(response.data.message);
+                } else {
+                    reject(response.data.message);
+                }
+            })
+            .catch(() => {
+                reject('网络不稳定请刷新重试！');
+            });
+    });
+    return promise;
+};
+
 export default {
     getLoginQrcode,
     isScan,
@@ -154,4 +173,5 @@ export default {
     getList,
     logout,
     delRobot,
+    pushLogin,
 };

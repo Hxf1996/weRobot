@@ -21,7 +21,7 @@
                             <ul class="list-group">
                                 <li class="list-group-item"
                                     v-for="group in groupList[robot.id]" :key="group.id"
-                                    :class="{ active: $route.params.id === group.id }"
+                                    :class="{ active: $route.params.id == group.id }"
                                     @click="go({ name: 'operate', params: { id: group.id, nickName: group.nickname } })">{{ group.nickname }}</li>
                             </ul>
                         </li>
@@ -34,7 +34,6 @@
                 </transition>
             </main>
         </section>
-        <login-modal></login-modal>
         <back-drop :active="backDrop"></back-drop>
         <loading :active="loading.active" :log="{ type: loading.type, text: loading.text }"></loading>
     </div>
@@ -48,7 +47,6 @@ import Util from '@/libs/util';
 import BackDrop from '@/components/common/BackDrop';
 import Loading from '@/components/Loading';
 import Header from '@/components/Header';
-import LoginModal from '@/components/LoginModal';
 
 export default {
     name: 'app',
@@ -67,7 +65,6 @@ export default {
         HeaderView: Header,
         BackDrop,
         Loading,
-        LoginModal,
     },
     methods: {
         async init() {
@@ -132,6 +129,7 @@ section, section > main, section > ul {
 }
 
 section {
+    display: grid;
     display: flex;
     padding-top: 66px;
     padding-right: 10px;

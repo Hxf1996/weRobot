@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-07 15:21:17
+* @Last Modified time: 2017-09-18 12:07:36
 */
 
 import Vue from 'vue';
@@ -27,6 +27,9 @@ const router = new Router({
             path: '/groupManage',
             name: 'groupManage',
             component: () => import('@/page/GroupManage'),
+            props: route => ({
+                groupId: Number(route.params.id),
+            }),
             children: [
                 {
                     path: ':id',

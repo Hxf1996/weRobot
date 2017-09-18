@@ -63,10 +63,8 @@ export default {
                 this.loading({
                     text: message,
                 });
-                this.addGroupData = [];
-                this.selectAll = false;
                 this.loaded(1500);
-                this.$emit('submit');
+                this.$emit('successAddGroup');
                 this.close();
             } catch (err) {
                 this.loading({
@@ -75,7 +73,17 @@ export default {
                 this.loaded(1500);
             }
         },
+        init() {
+            this.addGroupData = [];
+            this.selectAll = false;
+        },
+        open() {
+            this.openBackDrop();
+            this.show = true;
+            this.getGroupList();
+        },
         close() {
+            this.init();
             this.closeBackDrop();
             this.show = false;
             this.$emit('close');
@@ -112,11 +120,9 @@ export default {
         ]),
     },
     watch: {
-        active() {
-            this.show = this.active;
-            if (this.show) {
-                this.openBackDrop();
-                this.getGroupList();
+        active(active) {
+            if (active) {
+                this.open();
             }
         },
     },
@@ -125,6 +131,9 @@ export default {
     },
     computed: {
         unMonitorGroupList() {
+            if (this.groupList === null) {
+                return [];
+            }
             return this.groupList.filter(item => !item.monitor);
         },
     },

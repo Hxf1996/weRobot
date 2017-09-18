@@ -2,12 +2,16 @@
 * @Author: 94078
 * @Date:   2017-07-21 16:44:53
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-12 12:14:14
+* @Last Modified time: 2017-09-18 15:41:56
 */
 
 const getStorage = (key) => {
     const value = JSON.parse(sessionStorage.getItem(key)) || '';
     return value;
+};
+
+const removeStorage = (key) => {
+    sessionStorage.removeItem(key);
 };
 
 const setStorage = (key, data) => {
@@ -57,6 +61,7 @@ const hasClass = (el, cls) => !!el.className.match(new RegExp(`(\\s|^)${cls}(\\s
 
 export default {
     getStorage,
+    removeStorage,
     setStorage,
     formatDate,
     addClass,

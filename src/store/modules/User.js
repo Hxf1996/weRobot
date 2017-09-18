@@ -1,8 +1,8 @@
 /*
 * @Author: 94078
 * @Date:   2017-04-15 11:22:00
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-04 19:43:06
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-18 15:43:39
 */
 
 import userAPI from '@/api/User';
@@ -19,16 +19,20 @@ const getters = {
 
 const actions = {
     async login({ commit }, data) {
-        const entry = await userAPI.login(data);
-        const userToken = entry.userInfo.userId;
-        commit('setUserToken', userToken);
-        Util.setStorage('USER_TOKEN', userToken);
+        const { entry, message } = await userAPI.login(data);
+        commit('setUserToken', entry.userInfo.userId);
+        return message;
     },
 };
 
 const mutations = {
     setUserToken(state, userToken) {
         state.userToken = userToken;
+        Util.setStorage('USER_TOKEN', userToken);
+    },
+    removeUserToken(state) {
+        state.userToken = '';
+        Util.removeStorage('USER_TOKEN');
     },
     setUUId(state, uuid) {
         state.uuid = uuid;

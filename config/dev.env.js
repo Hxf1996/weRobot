@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-03-18 22:05:35
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-12 17:00:50
+* @Last Modified time: 2017-09-18 09:50:47
 */
 /* eslint-disable */
 
@@ -11,5 +11,5 @@ var prodEnv = require('./prod.env');
 
 module.exports = merge(prodEnv, {
     NODE_ENV: '"development"',
-    API_ROOT: '"http://172.172.7.74:8080/procurement"',
+    API_ROOT: '"http://daily.elephtribe.com"',
 });

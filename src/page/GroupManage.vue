@@ -2,7 +2,7 @@
     <div id="group-manage">
         <h4>群管理</h4>
         <nav class="nav">
-            <router-link v-for="one in robotList" :key="one.id" :to="{ name: 'groupList', params: { id: one.id } }" class="nav-link" :class="{active: one.id === $route.params.id}">机器人：{{ one.nickname }}</router-link>
+            <router-link v-for="one in robotList" :key="one.id" :to="{ name: 'groupList', params: { id: one.id } }" class="nav-link" :class="{active: one.id === groupId}">机器人：{{ one.nickname }}</router-link>
         </nav>
         <router-view class="group-list-view"></router-view>
     </div>
@@ -13,13 +13,16 @@ import { mapState } from 'vuex';
 
 export default {
     name: 'GroupManage',
-    mounted() {
-        this.$router.push({
-            name: 'groupList',
-            params: {
-                id: this.robotList[0].id,
-            },
-        });
+    props: ['groupId'],
+    created() {
+        setTimeout(() => {
+            this.$router.push({
+                name: 'groupList',
+                params: {
+                    id: this.robotList[0].id,
+                },
+            });
+        }, 100);
     },
     data() {
         return {

@@ -37,6 +37,7 @@ export default {
     },
     methods: {
         async open() {
+            this.show = this.active;
             try {
                 // 记录开始时间
                 this.timestamp = new Date().getTime();
@@ -123,7 +124,7 @@ export default {
             try {
                 this.close();
                 await RobotAPI.init(initData);
-                this.$emit('activate');
+                this.$emit('successLogin');
             } catch (err) {
                 this.loading({
                     text: err,
@@ -161,7 +162,6 @@ export default {
     watch: {
         active(active) {
             if (active) {
-                this.show = active;
                 this.openBackDrop();
                 this.open();
             }

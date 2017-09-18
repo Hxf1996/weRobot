@@ -4,10 +4,11 @@
         <div class="robot-list">
             <div class="card" v-for="one in robotList" :key="one.id">
                 <div class="card-body">
-                    <button type="button" class="close" aria-label="Close" @click="openDelRobotModal(one)">
+                    <button type="button" class="close" aria-label="Close"
+                        @click="openDeleteRobotModal(one)">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <img :src="`${url}/image/qrcode/${one.headImgUrl}`" alt="头像">
+                    <img :src="one.headImgUrl" alt="头像">
                     <p class="card-text">机器人：{{ one.nickname }}</p>
                     <p class="card-text">状态：{{ one.status ? '在线' : '离线' }}</p>
                     <button type="button" class="btn btn-secondary" @click="toogleRobotStatu(one)">{{ one.status ? '手动掉线' : '重新连接' }}</button>
@@ -23,23 +24,27 @@
             <li>如果尝试多次登录失败，请登录web微信（http://wx.qq.com），检查是否可以正常登录</li>
             <li>微信机器人登录后，请尽量避使用PC客户端登录或网页端登录微信，否则会导致机器人服务不稳定</li>
         </ol>
-        <delete-robot-modal :active="delRobotModal" :name="focusRobotName" :id="focusRobotId"
-            @activate="getRobotList" @close="closeDelRobotModal"></delete-robot-modal>
         <login-robot-modal :active="loginRobotModal" :name="focusRobotName"
-            @activate="getRobotList" @close="closeLoginRobotModal"></login-robot-modal>
-        <logout-robot-modal :active="logoutRobotModal" :name="focusRobotName" :id="focusRobotId"
-            @activate="getRobotList" @close="closeLogoutRobotModal"></logout-robot-modal>
+            @close="closeLoginRobotModal" @successLogin="getRobotList"></login-robot-modal>
+        <message-box :active="logoutRobotModal" :title="'手动掉线'"
+            @close="closeLogoutRobotModal" @submit="logoutRobot">
+            <span>你确定要掉线<br/>机器人"{{ focusRobotName }}"吗？</span>
+        </message-box>
+        <message-box :active="deleteRobotModal" :title="''"
+            @close="closeDeleteRobotModal" @submit="deleteRobot">
+            <span>你确定要删除<br/>机器人"{{ focusRobotName }}"吗？</span>
+        </message-box>
     </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 import LoginRobotModal from '@/components/LoginRobotModal';
-import LogoutRobotModal from '@/components/LogoutRobotModal';
-import DeleteRobotModal from '@/components/DeleteRobotModal';
+import MessageBox from '@/components/common/MessageBox';
 
 import { baseURL } from '@/api/HTTP';
+import RobotAPI from '@/api/Robot';
 
 export default {
     name: 'RobotManage',
@@ -49,14 +54,36 @@ export default {
             focusRobotId: '',
             loginRobotModal: false,
             logoutRobotModal: false,
-            delRobotModal: false,
+            deleteRobotModal: false,
             url: baseURL,
             interval: '',
         };
     },
     methods: {
-        openLoginRobotModal() {
-            this.loginRobotModal = true;
+        async openLoginRobotModal(uin = false) {
+            // if (uin) {
+            //     this.loading({
+            //         text: '正在重连',
+            //     });
+            //     try {
+            //         await RobotAPI.pushLogin({
+            //             uin,
+            //         });
+            //         this.loading({
+            //             text: '重连成功',
+            //         });
+            //         await this.getRobotList();
+            //         this.loaded(100);
+            //     } catch (err) {
+            //         this.loading({
+            //             text: '请重新登录',
+            //         });
+            //         await this.loaded(1500);
+            //         this.openLoginRobotModal();
+            //     }
+            // } else {
+                this.loginRobotModal = true;
+            // }
         },
         closeLoginRobotModal() {
             this.loginRobotModal = false;
@@ -67,20 +94,56 @@ export default {
         closeLogoutRobotModal() {
             this.logoutRobotModal = false;
         },
-        openDelRobotModal({ nickname, id }) {
+        async logoutRobot() {
+            this.loading({
+                text: '正在断线',
+            });
+            try {
+                await RobotAPI.logout({ robotId: this.focusRobotId });
+                await this.getRobotList();
+                this.loaded(100);
+                this.closeLogoutRobotModal();
+            } catch (err) {
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
+            }
+        },
+        openDeleteRobotModal({ nickname, id }) {
             this.focusRobotName = nickname;
             this.focusRobotId = id;
-            this.delRobotModal = true;
+            this.deleteRobotModal = true;
         },
-        closeDelRobotModal() {
-            this.delRobotModal = false;
+        closeDeleteRobotModal() {
+            this.deleteRobotModal = false;
         },
-        toogleRobotStatu({ status, nickname, id }) {
+        async deleteRobot() {
+            this.loading({
+                text: '正在删除',
+            });
+            try {
+                await RobotAPI.delRobot({ robotId: this.focusRobotId });
+                await this.getRobotList();
+                this.loaded(100);
+                this.focusRobotName = '';
+                this.focusRobotId = '';
+                this.closeDeleteRobotModal();
+            } catch (err) {
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
+            }
+        },
+        toogleRobotStatu({
+            status, nickname, id, uin,
+        }) {
             this.focusRobotName = nickname;
             this.focusRobotId = id;
             switch (status) {
             case 0:
-                this.openLoginRobotModal();
+                this.openLoginRobotModal(uin);
                 break;
             case 1:
                 this.openLogoutRobotModal();
@@ -91,6 +154,12 @@ export default {
         },
         ...mapActions('Robot', [
             'getRobotList',
+        ]),
+        ...mapActions([
+            'loaded',
+        ]),
+        ...mapMutations([
+            'loading',
         ]),
     },
     beforeRouteEnter(to, from, next) {
@@ -113,8 +182,7 @@ export default {
     },
     components: {
         LoginRobotModal,
-        LogoutRobotModal,
-        DeleteRobotModal,
+        MessageBox,
     },
     computed: {
         ...mapState('User', [

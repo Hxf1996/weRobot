@@ -1,5 +1,5 @@
 <template>
-    <modal :active="loginModal" @toogle="close">
+    <modal :active="show" @toogle="close">
         <div class="modal-header">
             <h5>登陆</h5>
         </div>
@@ -29,12 +29,14 @@
 <script>
 import Modal from '@/components/common/Modal';
 
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 
 export default {
     name: 'UserModal',
+    props: ['active'],
     data() {
         return {
+            show: false,
             userLoginFrom: {
                 mobile: '',
                 password: '',
@@ -42,36 +44,62 @@ export default {
         };
     },
     methods: {
-        ...mapActions('User', [
-            'login',
-        ]),
-        submit() {
-            this.login(this.userLoginFrom)
-                .then(() => {
-                    this.close();
-                    alert('登陆成功');
-                    this.$router.push({ name: 'robotManage' });
-                })
-                .catch((error) => {
-                    alert(error);
+        init() {
+            this.userLoginFrom = {
+                mobile: '',
+                password: '',
+            };
+        },
+        async submit() {
+            try {
+                this.loading({
+                    text: '正在登录',
                 });
+                const message = await this.login(this.userLoginFrom);
+                this.loading({
+                    text: message,
+                });
+                this.loaded(1000);
+                this.close();
+                this.$emit('submit');
+            } catch (err) {
+                this.loading({
+                    text: err,
+                });
+                this.loaded(1500);
+            }
+        },
+        open() {
+            this.show = this.active;
+            this.openBackDrop();
         },
         close() {
+            this.init();
+            this.show = false;
             this.closeBackDrop();
-            this.closeLoginModal();
+            this.$emit('close');
         },
         ...mapMutations([
             'closeBackDrop',
-            'closeLoginModal',
+            'openBackDrop',
+            'loading',
+        ]),
+        ...mapActions([
+            'loaded',
+        ]),
+        ...mapActions('User', [
+            'login',
         ]),
     },
     components: {
         Modal,
     },
-    computed: {
-        ...mapState([
-            'loginModal',
-        ]),
+    watch: {
+        active(active) {
+            if (active) {
+                this.open();
+            }
+        },
     },
 };
 </script>
