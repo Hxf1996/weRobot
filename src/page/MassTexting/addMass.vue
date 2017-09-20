@@ -137,9 +137,9 @@ export default {
             UploadAPI.uploadImg(param).then((response) => {
                 this.isUpload = false;
                 this.addMassData.srcUrl = `http://cdn.elephtribe.com/${response.data.entry[0]}`;
-            }).catch((err) => {
+            }).catch(() => {
                 this.loading({
-                    text: err,
+                    text: '网络超时',
                 });
                 this.loaded(1500);
             });
@@ -168,7 +168,7 @@ export default {
                 };
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }

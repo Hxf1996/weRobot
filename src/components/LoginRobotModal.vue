@@ -49,7 +49,7 @@ export default {
                 await this.isScan();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }
@@ -80,7 +80,7 @@ export default {
                 } else {
                     this.init();
                     this.loading({
-                        text: err,
+                        text: err.message,
                     });
                     this.loaded(1500);
                 }
@@ -113,7 +113,7 @@ export default {
                 } else {
                     this.init();
                     this.loading({
-                        text: err,
+                        text: err.message,
                     });
                     this.loaded(1500);
                 }
@@ -127,7 +127,7 @@ export default {
                 this.$emit('successLogin');
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }

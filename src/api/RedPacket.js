@@ -2,7 +2,7 @@
 * @Author: huxiaofeng
 * @Date:   2017-09-07 16:30:46
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-11 21:15:47
+* @Last Modified time: 2017-09-19 10:09:03
 */
 
 import HTTP from './HTTP';
@@ -14,11 +14,11 @@ const redEnvelopesConfig = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -33,11 +33,11 @@ const getEnvelopesConfig = (data) => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -50,11 +50,11 @@ const envelopesConfigInit = () => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -69,11 +69,11 @@ const redEnvelopesClose = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;

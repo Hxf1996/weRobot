@@ -64,7 +64,7 @@ export default {
                 this.$emit('submit');
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }

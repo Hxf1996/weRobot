@@ -1,8 +1,8 @@
 /*
 * @Author: hxf
 * @Date:   2017-09-01 11:25:04
-* @Last Modified by:   hxf
-* @Last Modified time: 2017-09-05 13:22:39
+* @Last Modified by:   huxiaofeng
+* @Last Modified time: 2017-09-19 10:08:21
 */
 
 import HTTP from './HTTP';
@@ -16,11 +16,11 @@ const getGroupList = (data) => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -35,11 +35,11 @@ const getMonitorGroupList = (data) => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -52,11 +52,11 @@ const updateGroup = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -69,11 +69,11 @@ const addMass = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -88,11 +88,11 @@ const getUndoTask = (data) => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -105,11 +105,11 @@ const updateTaskInfo = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -124,11 +124,11 @@ const delTaskInfo = (data) => {
                 if (response.data.status) {
                     resolve(response.data.message);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;
@@ -143,11 +143,11 @@ const getMsgRecord = (data) => {
                 if (response.data.status) {
                     resolve(response.data.entry);
                 } else {
-                    reject(response.data.message);
+                    reject(new Error(response.data.message));
                 }
             })
             .catch(() => {
-                reject('网络不稳定请刷新重试！');
+                reject(new Error('网络不稳定请刷新重试！'));
             });
     });
     return promise;

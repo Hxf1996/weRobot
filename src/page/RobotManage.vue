@@ -14,7 +14,7 @@
                     <button type="button" class="btn btn-secondary" @click="toogleRobotStatu(one)">{{ one.status ? '手动掉线' : '重新连接' }}</button>
                 </div>
             </div>
-            <div class="card login-robot" @click="openLoginRobotModal" v-if="robotList.length === 0">
+            <div class="card col-sm-6 col-md-4 login-robot" @click="openLoginRobotModal" v-if="robotList.length === 0">
                 <div class="card-body">
                     <span class="card-title">+&ensp;创建机器人</span>
                 </div>
@@ -105,7 +105,7 @@ export default {
                 this.closeLogoutRobotModal();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }
@@ -131,7 +131,7 @@ export default {
                 this.closeDeleteRobotModal();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }
@@ -216,8 +216,9 @@ h4 {
 
     & .card {
         height: 175px;
-        width: 30%;
         margin: 0 auto;
+        width: 30%;
+        min-width: 300px;
         float: left;
         margin-left: 2.5%;
         margin-bottom: 1rem;

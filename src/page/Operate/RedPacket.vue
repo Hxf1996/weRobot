@@ -10,14 +10,15 @@
         <div class="form-group row" v-show="status">
             <label for="budget" class="col-sm-2 col-form-label">群内红包预算</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="budget" placeholder="元" v-model.number="budget" min="1" :readonly="readOnly">
+                <input type="number" class="form-control" id="budget" placeholder="元" :readonly="readOnly"
+                    v-model.number="budget">
             </div>
             <span class="inline-margin" v-show="readOnly">剩余金额：{{ packetData.residueAmount /100 }}元</span>
         </div>
         <div class="form-group row" v-show="status">
             <label for="num" class="col-sm-2 col-form-label">红包发放个数</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="num" placeholder="个" :max="budget" :readonly="readOnly"
+                <input type="number" class="form-control" id="num" placeholder="个" :readonly="readOnly"
                     v-model.number="packetData.redEnvelopesNums">
             </div>
             <span class="inline-margin" v-show="readOnly">剩余数量：{{ packetData.residueNums }}个</span>
@@ -96,6 +97,21 @@ export default {
     },
     data() {
         return {
+            validate: {
+                budget() {
+                    return function (value, callback) {
+                        const result = {};
+                        if (value < 1) {
+                            result.message = '预算应为数字且大于一块';
+                            result.status = false;
+                        } else {
+                            result.validate = '/*/';
+                            result.status = true;
+                        }
+                        return result;
+                    };
+                },
+            },
             packetData: {
                 status: 0,
                 budget: '',
@@ -127,7 +143,7 @@ export default {
                 this.loaded(100);
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }
@@ -169,7 +185,7 @@ export default {
                 await this.getConfig();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }
@@ -188,7 +204,7 @@ export default {
                 await this.getConfig();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }

@@ -68,7 +68,7 @@ export default {
                 this.close();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }
@@ -97,7 +97,7 @@ export default {
                 this.loaded(100);
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }

@@ -65,7 +65,7 @@ export default {
                 this.closeDeleteGroup();
             } catch (err) {
                 this.loading({
-                    text: err,
+                    text: err.message,
                 });
                 this.loaded(1500);
             }

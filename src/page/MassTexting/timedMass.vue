@@ -193,6 +193,8 @@ table th {
     border: 1px solid #eeeeee;
     padding: .5rem 1rem;
     margin-top: 12px;
+    max-height: 300px;
+    overflow-y: scroll;
 
     & li {
         list-style: none;
