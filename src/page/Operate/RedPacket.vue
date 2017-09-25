@@ -1,27 +1,27 @@
 <template>
-    <form id="red-package" @submit.prevent="submit">
+    <form id="red-package" @submit.prevent="submit" v-validate.formData="validate">
         <div class="form-group row">
             <label for="status" class="col-sm-2 col-form-label">功能状态&emsp;&emsp;</label>
             <div class="col-sm-2">
-                <input type="checkbox" class="toggle-button" id="status" v-model="status">
+                <input type="checkbox" class="toggle-button" name="status" id="status" v-model="status">
             </div>
             <span class="inline-margin" v-show="readOnly && status">红包状态：{{ statusStr }}</span>
         </div>
         <div class="form-group row" v-show="status">
             <label for="budget" class="col-sm-2 col-form-label">群内红包预算</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="budget" placeholder="元" :readonly="readOnly"
+                <input type="number" class="form-control" name="budget" id="budget" placeholder="元" :readonly="readOnly"
                     v-model.number="budget">
             </div>
-            <span class="inline-margin" v-show="readOnly">剩余金额：{{ packetData.residueAmount /100 }}元</span>
+            <span class="inline-margin" v-show="readOnly">剩余金额：{{ formData.residueAmount /100 }}元</span>
         </div>
         <div class="form-group row" v-show="status">
             <label for="num" class="col-sm-2 col-form-label">红包发放个数</label>
             <div class="col-sm-2">
-                <input type="number" class="form-control" id="num" placeholder="个" :readonly="readOnly"
-                    v-model.number="packetData.redEnvelopesNums">
+                <input type="number" class="form-control" name="redEnvelopesNums" id="num" placeholder="个" :readonly="readOnly"
+                    v-model.number="formData.redEnvelopesNums">
             </div>
-            <span class="inline-margin" v-show="readOnly">剩余数量：{{ packetData.residueNums }}个</span>
+            <span class="inline-margin" v-show="readOnly">剩余数量：{{ formData.residueNums }}个</span>
         </div>
         <div class="form-group row money" v-show="status">
             <label class="col-sm-2 col-form-label">拉新红包金额</label>
@@ -29,34 +29,41 @@
                 <div class="form-check">
                     <label class="form-check-label" for="fix">
                         <input class="form-check-input" type="radio" name="type" id="fix" :value="1" :disabled="readOnly"
-                            v-model="packetData.redEnvelopesType">固定红包
+                            v-model="formData.redEnvelopesType">固定红包
                     </label>
                 </div>
-                <div class="form-check">
-                    <label class="form-check-label" for="random">
-                        <input class="form-check-input" type="radio" name="type" id="random" :value="2" :disabled="readOnly"
-                            v-model="packetData.redEnvelopesType">随机红包
-                        <input type="number" style="width: 80px;" min="1" :max="budget" :readonly="readOnly"
-                            v-model.number="amountRandomLower" v-show="packetData.redEnvelopesType === 2">
-                        <span v-show="packetData.redEnvelopesType === 2">-&ensp;</span>
-                        <input type="number" style="width: 80px;" :min="amountRandomLower" :max="budget" :readonly="readOnly"
-                            v-model.number="amountRandomUpper" v-show="packetData.redEnvelopesType === 2">
-                    </label>
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <label class="form-check-label" for="random">
+                            <input class="form-check-input" type="radio" name="type" id="random" :value="2" :disabled="readOnly"
+                                v-model="formData.redEnvelopesType">随机红包
+                        </label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" class="form-control redRandom" name="amountRandomLower" :readonly="readOnly"
+                            v-model.number="amountRandomLower" v-show="formData.redEnvelopesType === 2">
+                    </div>
+                    <span v-show="formData.redEnvelopesType === 2">-</span>
+                    <div class="col-auto">
+                        <input type="number" class="form-control redRandom" name="amountRandomUpper" :readonly="readOnly"
+                            v-model.number="amountRandomUpper" v-show="formData.redEnvelopesType === 2">
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
         <div class="form-group row" v-show="status">
             <label for="header-text" class="col-sm-2 col-form-label">红包页文案</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="header-text" placeholder="红包说明文案"maxlength="6" :readonly="readOnly"
-                    v-model="packetData.pageDoc1">
+                <input type="text" class="form-control" name="pageDoc1" id="header-text" placeholder="红包说明文案" :readonly="readOnly" maxlength="8"
+                    v-model="formData.pageDoc1">
             </div>
         </div>
         <div class="form-group row" v-show="status">
             <label for="bottom-text" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="bottom-text" placeholder="邀请拉新文案"maxlength="25" :readonly="readOnly"
-                    v-model="packetData.pageDoc2">
+                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="邀请拉新文案" :readonly="readOnly" maxlength="60"
+                    v-model="formData.pageDoc2">
             </div>
         </div>
         <div class="form-group row money" v-show="status">
@@ -65,22 +72,26 @@
                 <div class="form-check">
                     <label class="form-check-label">
                         <input class="form-check-input" type="radio" name="limit" :value="false" :disabled="readOnly"
-                            v-model="packetData.timesLimit">不限
+                            v-model="formData.timesLimit">不限
                     </label>
                 </div>
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="limit" :value="true" :disabled="readOnly"
-                            v-model="packetData.timesLimit">限制次数
-                        <input type="number" placeholder="次" min="1" style="width: 80px;" :readonly="readOnly"
-                            v-model.number="packetData.timesLimitUpper" v-show="packetData.timesLimit">
-                    </label>
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="limit" :value="true" :disabled="readOnly"
+                                v-model="formData.timesLimit">限制次数
+                        </label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" placeholder="次" name="timesLimitUpper" style="width: 80px;" :readonly="readOnly" class="form-control"
+                            v-model.number="formData.timesLimitUpper" v-show="formData.timesLimit">
+                    </div>
                     <small class="form-text text-muted">单人邀请他人入群，奖励到达上限后，不再发放</small>
                 </div>
             </div>
         </div>
         <footer>
-            <button type="submit" class="save" :disabled="isSave">保存</button>
+            <button type="submit" class="save" :disabled="!isSave">保存</button>
         </footer>
     </form>
 </template>
@@ -92,27 +103,68 @@ import RedPacketAPI from '@/api/RedPacket';
 
 export default {
     name: 'RedPacket',
-    async created() {
-        await this.getConfig();
+    created() {
+        this.getConfig();
     },
     data() {
         return {
             validate: {
-                budget() {
-                    return function (value, callback) {
-                        const result = {};
-                        if (value < 1) {
-                            result.message = '预算应为数字且大于一块';
-                            result.status = false;
-                        } else {
-                            result.validate = '/*/';
-                            result.status = true;
-                        }
-                        return result;
-                    };
+                budget({ budget }) {
+                    if (budget < 1) {
+                        throw new Error('预算不得小于一块');
+                    }
+                },
+                redEnvelopesNums({ budget, redEnvelopesNums }) {
+                    if (redEnvelopesNums < 1) {
+                        throw new Error('数量不得小于一个');
+                    }
+                    if (budget / 100 < redEnvelopesNums) {
+                        throw new Error('单个红包不得小于一块');
+                    }
+                },
+                amountRandomLower({ amountRandomLower, budget, redEnvelopesType }) {
+                    if (redEnvelopesType === 1) {
+                        return false;
+                    }
+                    if (amountRandomLower < 1) {
+                        throw new Error('过小');
+                    }
+                    if (amountRandomLower > budget) {
+                        throw new Error('过大');
+                    }
+                    return true;
+                },
+                amountRandomUpper({
+                    budget,
+                    amountRandomUpper,
+                    amountRandomLower,
+                    redEnvelopesType,
+                }) {
+                    if (redEnvelopesType === 1) {
+                        return false;
+                    }
+                    if (amountRandomUpper < 1) {
+                        throw new Error('过小');
+                    }
+                    if (amountRandomUpper < amountRandomLower) {
+                        throw new Error('过小');
+                    }
+                    if (amountRandomUpper > budget) {
+                        throw new Error('过小');
+                    }
+                    return true;
+                },
+                timesLimitUpper({ timesLimitUpper, timesLimit }) {
+                    if (!timesLimit) {
+                        return false;
+                    }
+                    if (timesLimitUpper < 1) {
+                        throw new Error('限制不得小于一次');
+                    }
+                    return true;
                 },
             },
-            packetData: {
+            formData: {
                 status: 0,
                 budget: '',
                 redEnvelopesNums: '',
@@ -133,12 +185,12 @@ export default {
                 text: '正在加载',
             });
             try {
-                const entry = await RedPacketAPI.getEnvelopesConfig({ groupId: this.$route.params.id });
-                if (entry === null) {
-                    this.packetData.status = 0;
-                } else {
+                const entry = await RedPacketAPI.getEnvelopesConfig({
+                    groupId: this.$route.params.id,
+                });
+                if (entry) {
                     this.readOnly = true;
-                    this.packetData = entry;
+                    this.formData = entry;
                 }
                 this.loaded(100);
             } catch (err) {
@@ -149,7 +201,7 @@ export default {
             }
         },
         init() {
-            this.packetData = {
+            this.formData = {
                 status: 0,
                 budget: '',
                 redEnvelopesNums: '',
@@ -161,6 +213,7 @@ export default {
                 timesLimit: false,
                 timesLimitUpper: '',
             };
+            this.readOnly = false;
         },
         submit() {
             if (this.readOnly) {
@@ -175,7 +228,7 @@ export default {
             });
             try {
                 const message = await RedPacketAPI.redEnvelopesConfig({
-                    ...this.packetData,
+                    ...this.formData,
                     userId: this.userId,
                     groupId: this.$route.params.id,
                 });
@@ -201,6 +254,7 @@ export default {
                 this.loading({
                     text: message,
                 });
+                this.init();
                 await this.getConfig();
             } catch (err) {
                 this.loading({
@@ -218,7 +272,6 @@ export default {
     },
     watch: {
         async $route() {
-            this.readOnly = false;
             this.init();
             await this.getConfig();
         },
@@ -226,89 +279,64 @@ export default {
     computed: {
         status: {
             get() {
-                if (this.packetData.status === 0) {
-                    return false;
-                }
-                return true;
+                return !!this.formData.status;
             },
             set(val) {
-                if (val === false) {
-                    this.packetData.status = 0;
-                } else {
-                    this.packetData.status = 1;
-                }
+                this.formData.status = val ? 1 : 0;
             },
         },
         isSave() {
-            if (this.packetData.status && this.readOnly) {
-                return true;
+            if (this.formData.status && this.readOnly) {
+                return false;
             }
-            if (this.packetData.budget === '' || this.packetData.redEnvelopesNums === '') {
-                return true;
+            if (this.formData.budget === '' || this.formData.redEnvelopesNums === '') {
+                return false;
             }
-            if (this.packetData.pageDoc1 === '' || this.packetData.pageDoc2 === '') {
-                return true;
+            if (this.formData.pageDoc1 === '' || this.formData.pageDoc2 === '') {
+                return false;
             }
-            if (this.packetData.redEnvelopesType === 2) {
-                if (this.packetData.amountRandomLower === '' || this.packetData.amountRandomUpper === '') {
-                    return true;
+            if (this.formData.redEnvelopesType === 2) {
+                if (this.formData.amountRandomLower === '' || this.formData.amountRandomUpper === '') {
+                    return false;
                 }
             }
-            if (this.packetData.timesLimit) {
-                if (this.packetData.timesLimitUpper === '') {
-                    return true;
+            if (this.formData.timesLimit) {
+                if (this.formData.timesLimitUpper === '') {
+                    return false;
                 }
             }
-            return false;
+            return true;
         },
         statusStr() {
-            let str = '';
-            switch (this.packetData.status) {
-            case 1:
-                str = '正在进行';
-                break;
-            case 2:
-                str = '已领完';
-                break;
-            case 3:
-                str = '已关闭';
-                break;
-            default:
-                break;
-            }
-            return str;
+            const statusData = {
+                1: '正在进行',
+                2: '已领完',
+                3: '已关闭',
+            };
+            return statusData[this.formData.status];
         },
         budget: {
             get() {
-                if (this.packetData.budget === '') {
-                    return '';
-                }
-                return this.packetData.budget / 100;
+                return this.formData.budget ? this.formData.budget / 100 : '';
             },
             set(val) {
-                this.packetData.budget = val * 100;
+                this.formData.budget = val * 100;
             },
         },
         amountRandomUpper: {
             get() {
-                if (this.packetData.amountRandomUpper === '') {
-                    return '';
-                }
-                return this.packetData.amountRandomUpper / 100;
+                return this.formData.amountRandomUpper ? '' : this.formData.amountRandomUpper / 100;
             },
             set(val) {
-                this.packetData.amountRandomUpper = val * 100;
+                this.formData.amountRandomUpper = val * 100;
             },
         },
         amountRandomLower: {
             get() {
-                if (this.packetData.amountRandomLower === '') {
-                    return '';
-                }
-                return this.packetData.amountRandomLower / 100;
+                return this.formData.amountRandomLower ? '' : this.formData.amountRandomLower / 100;
             },
             set(val) {
-                this.packetData.amountRandomLower = val * 100;
+                this.formData.amountRandomLower = val * 100;
             },
         },
         ...mapState('User', {
@@ -362,5 +390,9 @@ export default {
 
 .toggle-button {
     margin-top: 5px;
+}
+
+.redRandom {
+    display: inline-block;
 }
 </style>

@@ -2,7 +2,7 @@
 * @Author: 94078
 * @Date:   2017-07-21 16:44:53
 * @Last Modified by:   huxiaofeng
-* @Last Modified time: 2017-09-18 15:41:56
+* @Last Modified time: 2017-09-21 16:31:11
 */
 
 const getStorage = (key) => {
@@ -42,11 +42,15 @@ const formatDate = (timestamp, format) => {
     });
 };
 
-const addClass = (el, cls) => {
-    const objClass = el.className;
-    const blank = (objClass !== '') ? ' ' : '';
-    const added = objClass + blank + cls;
-    el.className = added;
+const addClass = (el, cls, oldCls = cls) => {
+    let objClass = el.className.toString();
+    const isExist = !!el.className.match(new RegExp(`(${oldCls}|${cls})`));
+    if (isExist) {
+        objClass = objClass.replace(new RegExp(oldCls), cls);
+    } else {
+        objClass += ((objClass !== '') ? ' ' : '') + cls;
+    }
+    el.className = objClass;
 };
 
 const removeClass = (el, cls) => {
