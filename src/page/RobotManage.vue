@@ -60,7 +60,7 @@ export default {
         };
     },
     methods: {
-        async openLoginRobotModal(uin = false) {
+        async openLoginRobotModal() {
             // if (uin) {
             //     this.loading({
             //         text: '正在重连',
@@ -82,8 +82,9 @@ export default {
             //         this.openLoginRobotModal();
             //     }
             // } else {
-                this.loginRobotModal = true;
+            //      this.loginRobotModal = true;
             // }
+            this.loginRobotModal = true;
         },
         closeLoginRobotModal() {
             this.loginRobotModal = false;
