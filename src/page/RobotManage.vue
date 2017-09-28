@@ -74,7 +74,7 @@ export default {
             //         });
             //         await this.getRobotList();
             //         this.loaded(100);
-            //     } catch (err) {
+            //     } catch (e) {
             //         this.loading({
             //             text: '请重新登录',
             //         });
@@ -104,9 +104,9 @@ export default {
                 await this.getRobotList();
                 this.loaded(100);
                 this.closeLogoutRobotModal();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
@@ -130,9 +130,9 @@ export default {
                 this.focusRobotName = '';
                 this.focusRobotId = '';
                 this.closeDeleteRobotModal();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }

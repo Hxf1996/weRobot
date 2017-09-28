@@ -30,18 +30,18 @@ Vue.directive('validate', {
                     validate[changeElName](vm[dataKey]);
                     Util.removeClass(e.srcElement, 'is-invalid');
                 }
-            } catch (err) {
+            } catch (e) {
                 Util.addClass(e.srcElement, 'is-invalid');
             }
         });
-        el.getElementsByTagName('button')[0].addEventListener('click', (e) => {
+        el.getElementsByTagName('button')[0].addEventListener('click', () => {
             try {
                 Object.keys(vm[dataKey]).forEach((item) => {
                     if (validate[item]) {
                         validate[item](vm[dataKey]);
                     }
                 });
-            } catch (err) {
+            } catch (e) {
                 vm.loading({
                     text: '请检查参数',
                 });

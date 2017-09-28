@@ -91,9 +91,9 @@ export default {
                     records[index].toNickname = item.toNickname.split(/,/);
                 });
                 this.massList.push(...records);
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err,
+                    text: e,
                 });
                 this.loaded(1500);
             }

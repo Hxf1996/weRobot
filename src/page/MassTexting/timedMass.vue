@@ -88,9 +88,9 @@ export default {
                     entry[index].toNickname = item.toNickname.split(/,/);
                 });
                 this.massList.push(...entry);
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err,
+                    text: e,
                 });
                 this.loaded(1500);
             }
@@ -108,9 +108,9 @@ export default {
                 });
                 this.massList = [];
                 this.init();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err,
+                    text: e,
                 });
                 this.loaded(1500);
             }

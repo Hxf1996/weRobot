@@ -11,6 +11,7 @@ import Util from '@/libs/util';
 
 const state = {
     userToken: '',
+    userInfo: {},
     uuid: '',
 };
 
@@ -21,6 +22,7 @@ const actions = {
     async login({ commit }, data) {
         const { entry, message } = await userAPI.login(data);
         commit('setUserToken', entry.userInfo.userId);
+        commit('setUserInfo', entry.userInfo);
         return message;
     },
 };
@@ -33,6 +35,10 @@ const mutations = {
     removeUserToken(state) {
         state.userToken = '';
         Util.removeStorage('USER_TOKEN');
+    },
+    setUserInfo(state, info) {
+        state.userInfo = info;
+        Util.setStorage('USER_INFO', info);
     },
     setUUId(state, uuid) {
         state.uuid = uuid;

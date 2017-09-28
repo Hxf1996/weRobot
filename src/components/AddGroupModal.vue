@@ -66,9 +66,9 @@ export default {
                 this.loaded(1500);
                 this.$emit('successAddGroup');
                 this.close();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
@@ -95,9 +95,9 @@ export default {
             try {
                 this.groupList = await GroupAPI.getGroupList({ robotId: this.$route.params.id });
                 this.loaded(100);
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }

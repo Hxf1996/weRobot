@@ -165,9 +165,9 @@ export default {
                     isFixedTimeSend: false,
                     fixedTime: '',
                 };
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }

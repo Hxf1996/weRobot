@@ -62,6 +62,10 @@ export default {
         if (userToken !== '') {
             this.setUserToken(userToken);
         }
+        const userInfo = Util.getStorage('USER_INFO');
+        if (userInfo !== '') {
+            this.setUserInfo(userInfo);
+        }
     },
     components: {
         HeaderView: Header,
@@ -103,6 +107,7 @@ export default {
         ]),
         ...mapMutations('User', [
             'setUserToken',
+            'setUserInfo',
         ]),
         ...mapActions([
             'loaded',

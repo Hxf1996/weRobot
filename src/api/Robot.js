@@ -38,9 +38,9 @@ const isScan = (data) => {
                     reject(new Error(response.data.message));
                 }
             })
-            .catch((err) => {
-                if (err.response.status) {
-                    reject(new Error(err.response.message));
+            .catch((e) => {
+                if (e.response.status) {
+                    reject(new Error(e.response.message));
                 }
                 reject(new Error('网络不稳定请刷新重试！'));
             });
@@ -60,9 +60,9 @@ const isLogin = (data) => {
                     reject(new Error(response.data.message));
                 }
             })
-            .catch((err) => {
-                if (err.response.status) {
-                    reject(new Error(err.response.message));
+            .catch((e) => {
+                if (e.response.status) {
+                    reject(new Error(e.response.message));
                 }
                 reject(new Error('网络不稳定请刷新重试！'));
             });

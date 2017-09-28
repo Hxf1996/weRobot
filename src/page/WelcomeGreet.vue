@@ -55,14 +55,14 @@ export default {
 
             if (this.welcomeGreet.length === 0) {
                 this.welcomeGreet.push({
-                    welcomeText: '',
-                    welcomeIntroduce: '',
+                    welcomeText: '欢迎',
+                    welcomeIntroduce: '加入[微笑][微笑]',
                 });
             }
             this.loaded(100);
-        } catch (err) {
+        } catch (e) {
             this.loading({
-                text: err.message,
+                text: e.message,
             });
             this.loaded(1500);
         }

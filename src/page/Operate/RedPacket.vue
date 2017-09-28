@@ -13,7 +13,7 @@
                 <input type="number" class="form-control" name="budget" id="budget" placeholder="元" :readonly="readOnly"
                     v-model.number="budget">
             </div>
-            <span class="inline-margin" v-show="readOnly">剩余金额：{{ formData.residueAmount /100 }}元</span>
+            <span class="inline-margin" v-show="readOnly">剩余金额：{{ formData.residueAmount / 100 }}元</span>
         </div>
         <div class="form-group row" v-show="status">
             <label for="num" class="col-sm-2 col-form-label">红包发放个数&emsp;</label>
@@ -92,10 +92,12 @@
         <div class="form-group row" v-show="status">
             <label for="bottom-text" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="文案3" :readonly="readOnly" maxlength="22"
+                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="文案3" :readonly="readOnly" maxlength="22" :value="this.userInfo.realName"
                     v-model="formData.pageDoc3">
             </div>
         </div>
+        <img class="preview" src="http://cdn.elephtribe.com/assets/voice/09/28/n_1506589801161_3931.png" alt="红包预览图"
+            v-show="status">
         <footer>
             <button type="submit" class="save" :disabled="!isSave">保存</button>
         </footer>
@@ -200,9 +202,9 @@ export default {
                     this.formData = entry;
                 }
                 this.loaded(100);
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
@@ -243,9 +245,9 @@ export default {
                     text: message,
                 });
                 await this.getConfig();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
@@ -263,9 +265,9 @@ export default {
                 });
                 this.init();
                 await this.getConfig();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
@@ -348,6 +350,7 @@ export default {
         },
         ...mapState('User', {
             userId: 'userToken',
+            userInfo: 'userInfo',
         }),
     },
 };
@@ -401,5 +404,13 @@ export default {
 
 .redRandom {
     display: inline-block;
+}
+
+.preview {
+    right: 100px;
+    width: 250px;
+    margin-top: -350px;
+    float: right;
+    position: absolute;
 }
 </style>

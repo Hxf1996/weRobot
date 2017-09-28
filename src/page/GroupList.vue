@@ -63,9 +63,9 @@ export default {
                 await this.getGroupList();
                 this.loaded(100);
                 this.closeDeleteGroup();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }

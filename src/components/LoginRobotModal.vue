@@ -47,9 +47,9 @@ export default {
                 this.setUUId(uuid);
                 this.qrCodeUrl = qrcode;
                 await this.isScan();
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
@@ -70,8 +70,8 @@ export default {
                     uuid: this.uuid,
                 });
                 await this.isLogin();
-            } catch (err) {
-                if (err === '等待扫码') {
+            } catch (e) {
+                if (e.message === '等待扫码') {
                     if (this.show && (startTime === this.timestamp)) {
                         this.time = setTimeout(async () => {
                             await this.isScan();
@@ -80,7 +80,7 @@ export default {
                 } else {
                     this.init();
                     this.loading({
-                        text: err.message,
+                        text: e.message,
                     });
                     this.loaded(1500);
                 }
@@ -103,8 +103,8 @@ export default {
                 });
                 clearInterval(this.refreshInterval);
                 await this.initRobot({ uin, robotId: id });
-            } catch (err) {
-                if (err === '等待确认') {
+            } catch (e) {
+                if (e.message === '等待确认') {
                     if (this.show && (startTime === this.timestamp)) {
                         this.time = setTimeout(async () => {
                             await this.isLogin();
@@ -113,7 +113,7 @@ export default {
                 } else {
                     this.init();
                     this.loading({
-                        text: err.message,
+                        text: e.message,
                     });
                     this.loaded(1500);
                 }
@@ -125,9 +125,9 @@ export default {
                 this.close();
                 await RobotAPI.init(initData);
                 this.$emit('successLogin');
-            } catch (err) {
+            } catch (e) {
                 this.loading({
-                    text: err.message,
+                    text: e.message,
                 });
                 this.loaded(1500);
             }
