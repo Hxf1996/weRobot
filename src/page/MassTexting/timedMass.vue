@@ -12,8 +12,10 @@
             </thead>
             <tbody>
                 <tr v-for="one in massList">
-                    <td class="msg" scope="row" v-if="one.msgType === 1">
-                        {{ one.contentOrUrl }}
+                    <td class="msg" :class="{ list: one.contentOrUrl.length >= 28 }"
+                        v-if="one.msgType === 1" @click="fullMsg">
+                        {{ one.contentOrUrl.substring(0, 28) }}
+                        <div class="group-list" v-if="one.contentOrUrl.length >= 28">{{ one.contentOrUrl }}</div>
                     </td>
                     <td scope="row" v-if="one.msgType === 2">
                         <img :src="one.contentOrUrl" alt="群发图片">
@@ -55,6 +57,13 @@ export default {
     },
     methods: {
         openGroupList(one) {
+            if (Util.hasClass(one.target, 'active')) {
+                Util.removeClass(one.target, 'active');
+            } else {
+                Util.addClass(one.target, 'active');
+            }
+        },
+        fullMsg(one) {
             if (Util.hasClass(one.target, 'active')) {
                 Util.removeClass(one.target, 'active');
             } else {
@@ -150,9 +159,9 @@ table th {
 .msg {
     max-width: 400px;
     max-height: 49px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    position: relative;
 }
 
 .group {
@@ -161,9 +170,10 @@ table th {
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;
+    text-align: center;
 }
 
-.group.list::after {
+.list::after {
     content: '\25BC';
     display: block;
     position: absolute;
@@ -195,6 +205,7 @@ table th {
     margin-top: 12px;
     max-height: 300px;
     overflow-y: scroll;
+    white-space: unset;
 
     & li {
         list-style: none;
@@ -203,6 +214,7 @@ table th {
 
 .active {
     overflow: unset;
+    word-break: break-all;
 
     & .group-list {
         display: block;
