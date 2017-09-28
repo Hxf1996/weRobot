@@ -12,6 +12,8 @@
                             @click="go({ name: 'groupManage' })">群管理&emsp;&emsp;</li>
                         <li class="list-group-item" :class="{ active: /\/massTexting/.test($route.path) }"
                             @click="go({ name: 'massTexting' })">消息群发&emsp;</li>
+                        <li class="list-group-item" :class="{ active: /\/welcomeGreet/.test($route.path) }"
+                            @click="go({ name: 'welcomeGreet' })">欢迎词&emsp;&emsp;</li>
                     </ul>
                 </li>
                 <li class="list-group-item" style="flex-direction: column;">
@@ -35,7 +37,7 @@
             </main>
         </section>
         <back-drop :active="backDrop"></back-drop>
-        <loading :active="loading.active" :log="{ type: loading.type, text: loading.text }"></loading>
+        <loading :active="loadConfig.active" :log="{ type: loadConfig.type, text: loadConfig.text }"></loading>
     </div>
 </template>
 
@@ -69,7 +71,10 @@ export default {
     methods: {
         async init() {
             if (this.userToken === '' && this.$route.name !== 'index') {
-                alert('请先登录！');
+                this.loading({
+                    text: '请先登录',
+                });
+                this.loaded(1000);
                 this.$router.push({ name: 'index' });
             }
             if (this.robotList.length === 0 || this.$route.name === 'robotManage') {
@@ -77,7 +82,10 @@ export default {
             }
             if (this.$route.name !== 'robotManage' && this.$route.name !== 'index') {
                 if (this.robotList.length === 0 || this.robotList[0].status === 0) {
-                    alert('请先绑定并激活机器人');
+                    this.loading({
+                        text: '请先绑定并激活机器人',
+                    });
+                    this.loaded(1000);
                     this.$router.push({
                         name: 'robotManage',
                     });
@@ -90,11 +98,17 @@ export default {
                 this.$router.push(to);
             }
         },
-        ...mapActions('Robot', [
-            'getRobotList',
+        ...mapMutations([
+            'loading',
         ]),
         ...mapMutations('User', [
             'setUserToken',
+        ]),
+        ...mapActions([
+            'loaded',
+        ]),
+        ...mapActions('Robot', [
+            'getRobotList',
         ]),
     },
     watch: {
@@ -103,10 +117,10 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            'backDrop',
-            'loading',
-        ]),
+        ...mapState({
+            backDrop: 'backDrop',
+            loadConfig: 'loading',
+        }),
         ...mapState('User', [
             'userToken',
         ]),

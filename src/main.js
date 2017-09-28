@@ -42,7 +42,6 @@ Vue.directive('validate', {
                     }
                 });
             } catch (err) {
-                console.log(err);
                 vm.loading({
                     text: '请检查参数',
                 });

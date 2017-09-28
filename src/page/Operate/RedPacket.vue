@@ -1,14 +1,14 @@
 <template>
     <form id="red-package" @submit.prevent="submit" v-validate.formData="validate">
         <div class="form-group row">
-            <label for="status" class="col-sm-2 col-form-label">功能状态&emsp;&emsp;</label>
+            <label for="status" class="col-sm-2 col-form-label">功能状态&emsp;&emsp;&emsp;</label>
             <div class="col-sm-2">
                 <input type="checkbox" class="toggle-button" name="status" id="status" v-model="status">
             </div>
             <span class="inline-margin" v-show="readOnly && status">红包状态：{{ statusStr }}</span>
         </div>
         <div class="form-group row" v-show="status">
-            <label for="budget" class="col-sm-2 col-form-label">群内红包预算</label>
+            <label for="budget" class="col-sm-2 col-form-label">群内红包预算&emsp;</label>
             <div class="col-sm-2">
                 <input type="number" class="form-control" name="budget" id="budget" placeholder="元" :readonly="readOnly"
                     v-model.number="budget">
@@ -16,7 +16,7 @@
             <span class="inline-margin" v-show="readOnly">剩余金额：{{ formData.residueAmount /100 }}元</span>
         </div>
         <div class="form-group row" v-show="status">
-            <label for="num" class="col-sm-2 col-form-label">红包发放个数</label>
+            <label for="num" class="col-sm-2 col-form-label">红包发放个数&emsp;</label>
             <div class="col-sm-2">
                 <input type="number" class="form-control" name="redEnvelopesNums" id="num" placeholder="个" :readonly="readOnly"
                     v-model.number="formData.redEnvelopesNums">
@@ -24,7 +24,7 @@
             <span class="inline-margin" v-show="readOnly">剩余数量：{{ formData.residueNums }}个</span>
         </div>
         <div class="form-group row money" v-show="status">
-            <label class="col-sm-2 col-form-label">拉新红包金额</label>
+            <label class="col-sm-2 col-form-label">拉新红包金额&emsp;</label>
             <div class="col-sm-8">
                 <div class="form-check">
                     <label class="form-check-label" for="fix">
@@ -49,21 +49,6 @@
                             v-model.number="amountRandomUpper" v-show="formData.redEnvelopesType === 2">
                     </div>
                 </div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group row" v-show="status">
-            <label for="header-text" class="col-sm-2 col-form-label">红包页文案</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" name="pageDoc1" id="header-text" placeholder="红包说明文案" :readonly="readOnly" maxlength="8"
-                    v-model="formData.pageDoc1">
-            </div>
-        </div>
-        <div class="form-group row" v-show="status">
-            <label for="bottom-text" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="邀请拉新文案" :readonly="readOnly" maxlength="60"
-                    v-model="formData.pageDoc2">
             </div>
         </div>
         <div class="form-group row money" v-show="status">
@@ -88,6 +73,27 @@
                     </div>
                     <small class="form-text text-muted">单人邀请他人入群，奖励到达上限后，不再发放</small>
                 </div>
+            </div>
+        </div>
+        <div class="form-group row" v-show="status">
+            <label for="header-text" class="col-sm-2 col-form-label">红包页文案&emsp;&emsp;</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="pageDoc1" id="header-text" placeholder="文案1" :readonly="readOnly" maxlength="14"
+                    v-model="formData.pageDoc1">
+            </div>
+        </div>
+        <div class="form-group row" v-show="status">
+            <label for="bottom-text" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="文案2" :readonly="readOnly" maxlength="18"
+                    v-model="formData.pageDoc2">
+            </div>
+        </div>
+        <div class="form-group row" v-show="status">
+            <label for="bottom-text" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="文案3" :readonly="readOnly" maxlength="22"
+                    v-model="formData.pageDoc3">
             </div>
         </div>
         <footer>
@@ -173,6 +179,7 @@ export default {
                 amountRandomLower: '',
                 pageDoc1: '',
                 pageDoc2: '',
+                pageDoc3: '',
                 timesLimit: false,
                 timesLimitUpper: '',
             },
@@ -292,7 +299,7 @@ export default {
             if (this.formData.budget === '' || this.formData.redEnvelopesNums === '') {
                 return false;
             }
-            if (this.formData.pageDoc1 === '' || this.formData.pageDoc2 === '') {
+            if (this.formData.pageDoc1 === '' || this.formData.pageDoc2 === '' || this.formData.pageDoc3 === '') {
                 return false;
             }
             if (this.formData.redEnvelopesType === 2) {
@@ -325,7 +332,7 @@ export default {
         },
         amountRandomUpper: {
             get() {
-                return this.formData.amountRandomUpper ? '' : this.formData.amountRandomUpper / 100;
+                return !this.formData.amountRandomUpper ? '' : this.formData.amountRandomUpper / 100;
             },
             set(val) {
                 this.formData.amountRandomUpper = val * 100;
@@ -333,7 +340,7 @@ export default {
         },
         amountRandomLower: {
             get() {
-                return this.formData.amountRandomLower ? '' : this.formData.amountRandomLower / 100;
+                return !this.formData.amountRandomLower ? '' : this.formData.amountRandomLower / 100;
             },
             set(val) {
                 this.formData.amountRandomLower = val * 100;

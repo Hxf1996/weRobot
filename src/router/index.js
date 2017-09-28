@@ -72,6 +72,11 @@ const router = new Router({
                 },
             ],
         },
+        {
+            path: '/welcomeGreet',
+            name: 'welcomeGreet',
+            component: () => import('@/page/WelcomeGreet'),
+        },
     ],
 });
 

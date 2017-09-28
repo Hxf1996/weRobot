@@ -72,8 +72,7 @@
             </div>
         </transition>
         <footer>
-            <button type="submit" class="save"
-                :disabled="isSave">保存</button>
+            <button type="submit" class="save" :disabled="isSave">保存</button>
         </footer>
     </form>
 </template>
