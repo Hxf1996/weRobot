@@ -92,7 +92,7 @@
         <div class="form-group row" v-show="status">
             <label for="bottom-text" class="col-sm-2 col-form-label"></label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="文案3" :readonly="readOnly" maxlength="22" :value="this.userInfo.realName"
+                <input type="text" class="form-control" name="pageDoc2" id="bottom-text" placeholder="文案3" :readonly="readOnly" maxlength="22"
                     v-model="formData.pageDoc3">
             </div>
         </div>
@@ -112,6 +112,7 @@ import RedPacketAPI from '@/api/RedPacket';
 export default {
     name: 'RedPacket',
     created() {
+        this.init();
         this.getConfig();
     },
     data() {
@@ -217,8 +218,9 @@ export default {
                 redEnvelopesType: 1,
                 amountRandomUpper: '',
                 amountRandomLower: '',
-                pageDoc1: '',
-                pageDoc2: '',
+                pageDoc1: this.userInfo.realName,
+                pageDoc2: '送您一个进群红包',
+                pageDoc3: '邀请朋友进群，也可以领取红包哦',
                 timesLimit: false,
                 timesLimitUpper: '',
             };
