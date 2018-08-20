@@ -72,8 +72,8 @@ export default {
 </script>
 
 <style scoped>
-@import '../../assets/common';
-@import '../../assets/animation';
+@import '../../assets/common.css';
+@import '../../assets/animation.css';
 
 .carousel-inner {
     padding-left: 0;

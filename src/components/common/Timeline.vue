@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../../assets/common';
+@import '../../assets/common.css';
 
 .container {
     height: 350px;

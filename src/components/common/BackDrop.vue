@@ -33,8 +33,8 @@ export default {
 </script>
 
 <style scoped>
-@import '../../assets/common';
-@import '../../assets/animation';
+@import '../../assets/common.css';
+@import '../../assets/animation.css';
 
 .modal-backdrop {
     background-color: rgba(0, 0, 0, 0.5);

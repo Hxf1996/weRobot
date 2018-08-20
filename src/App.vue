@@ -137,7 +137,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 #app {
     background-color: rgb(231, 232, 235);
     height: 100%;
@@ -254,9 +254,9 @@ section {
 }
 </style>
 
-<style>
-@import './assets/animation';
-@import './assets/common';
+<style lang="postcss">
+@import './assets/animation.css';
+@import './assets/common.css';
 
 .list-group-item {
     padding: 0;
